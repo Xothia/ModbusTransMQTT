@@ -1,3 +1,8 @@
+import com.xothia.MqttServer;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -11,4 +16,9 @@
  * @Description :测试类
  */
 public class TestFunc {
+    @Test
+    public void test(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
+        MqttServer server = context.getBean("mqttServer", MqttServer.class);
+    }
 }
