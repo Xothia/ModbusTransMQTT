@@ -10,6 +10,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,13 +29,16 @@ import org.springframework.stereotype.Component;
  */
 @Component("mqttServer")
 public class MqttServer {
-    @Value("7890")
+    @Value("9999")
     private Integer port; //服务端口号
 
     private NioEventLoopGroup bossGroup, workerGroup;
     private ServerBootstrap bootstrap;
 
+    protected final Log logger = LogFactory.getLog(getClass()); //日志
+
     private void init(){ //创建对象 并初始化管道中handler
+        logger.info("网关初始化...");
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
@@ -47,21 +52,25 @@ public class MqttServer {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast("decoder", new MqttDecoder());
                         pipeline.addLast("encoder", MqttEncoder.INSTANCE);
-                        pipeline.addLast(null); //业务handler
+                        pipeline.addLast(new CoreHandler()); //业务handler
                     }
                 });
+        logger.info("网关初始化完成.");
     }
 
-    public void run() throws Exception{ //server启动
+    public void run(){ //server启动
         try {
             init();
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
+            logger.info("网关正常工作.");
             channelFuture.channel().closeFuture().sync(); //一直监听关闭事件防止程序结束
         }catch (Exception e){
+            logger.error("网关异常.");
             e.printStackTrace();
         }finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            logger.info("网关正常关闭.");
         }
     }
 
