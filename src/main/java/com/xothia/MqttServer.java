@@ -13,6 +13,7 @@ import io.netty.handler.codec.mqtt.MqttEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,8 +29,9 @@ import org.springframework.stereotype.Component;
  * @Description : mqtt网关，用于接收和发送mqtt报文。
  */
 @Component("mqttServer")
+@PropertySource(value={"classpath:Mtm.properties"})
 public class MqttServer {
-    @Value("9999")
+    @Value("${gateway.port}")
     private Integer port; //服务端口号
 
     private NioEventLoopGroup bossGroup, workerGroup;

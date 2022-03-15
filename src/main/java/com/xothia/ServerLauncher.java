@@ -1,6 +1,8 @@
 package com.xothia;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.xothia.springConfig.SpringConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +18,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class ServerLauncher {
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
+        //ApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         MqttServer server = context.getBean("mqttServer", MqttServer.class);
         server.run();
     }
