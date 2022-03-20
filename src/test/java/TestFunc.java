@@ -34,4 +34,11 @@ public class TestFunc {
         System.out.println(obj1);
         System.out.println(obj2);
     }
+
+    @Test
+    public void test3(){
+        System.out.println(Double.toString(Math.random()).substring(0,12));
+        System.out.println(Double.toString(Math.random()).substring(0,12));
+        System.out.println(Double.toString(Math.random()).substring(0,12));
+    }
 }

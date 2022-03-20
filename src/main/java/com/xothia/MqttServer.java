@@ -48,6 +48,7 @@ public class MqttServer {
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.AUTO_READ, false) //???
                 .childHandler(new ChannelInitializer<SocketChannel>() { //初始化channel
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
