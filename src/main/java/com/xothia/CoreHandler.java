@@ -122,35 +122,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter {
                     });
                 }
             });
-//            while (!outboundChannel.isActive()){
-//
-//            }
-            //logger.info("proxy: mqtt msg inbound and outbound channel is ready.");
-//            outboundChannel.writeAndFlush((MqttMessage)msg).addListener(new ChannelFutureListener() {
-//                @Override
-//                public void operationComplete(ChannelFuture future) throws Exception {
-//                    if (future.isSuccess()) {
-//                        // was able to flush out data, start to read the next chunk
-//                        logger.info("client msg->proxy->broker is complete.");
-//                        ctx.channel().read();
-//                    } else {
-//                        logger.info("client msg->proxy->broker is bad.");
-//                        //future.channel().close();
-//                    }
-//                }
-//            });
-
-//            System.out.println("mqtt msg inbound.");
-//            MqttConnAckMessage ackMessage = MqttMessageBuilders.connAck().returnCode(MqttConnectReturnCode.CONNECTION_ACCEPTED).build();
-//            ctx.writeAndFlush(ackMessage);
-//            System.out.println("write complete.");
-//            group.submit(new Runnable() {
-//                @Override
-//                public void run() {
-//                    System.out.println("this is a task.");
-//                }
-//            });
-
         }
         else {
             super.channelRead(ctx, msg); //向后传递msg
