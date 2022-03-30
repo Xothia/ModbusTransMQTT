@@ -1,3 +1,8 @@
+import com.serotonin.modbus4j.ModbusFactory;
+import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.ip.IpParameters;
+import com.serotonin.modbus4j.msg.WriteRegisterRequest;
+import com.serotonin.modbus4j.msg.WriteRegisterResponse;
 import com.xothia.MqttServer;
 import com.xothia.bean.MqttClientImpl;
 import com.xothia.bean.MqttClientIn;
@@ -41,4 +46,28 @@ public class TestFunc {
         System.out.println(Double.toString(Math.random()).substring(0,12));
         System.out.println(Double.toString(Math.random()).substring(0,12));
     }
+
+    @Test
+    public void test4(){
+        IpParameters ip = new IpParameters();
+        ip.setHost("192.168.31.32");
+        ModbusMaster tcpMaster = new ModbusFactory().createTcpMaster(ip, true);
+        try{
+            tcpMaster.init();
+            //ReadHoldingRegistersResponse modbusResponse = (ReadHoldingRegistersResponse)tcpMaster.send(new ReadHoldingRegistersRequest(1, 0, 2));
+            WriteRegisterResponse modbusResponse = (WriteRegisterResponse)tcpMaster.send(new WriteRegisterRequest(2, 1, 53));
+            if(modbusResponse.isException()){
+                System.out.println(modbusResponse.getExceptionMessage());
+            }
+            else{
+                //System.out.println(Arrays.toString(modbusResponse.getShortData()));
+                System.out.println(modbusResponse.getWriteValue());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
 }
