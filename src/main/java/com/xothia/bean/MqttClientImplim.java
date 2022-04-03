@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
  * @Email : huaxia889900@126.com
  * @Description :
  */
-public class MqttClientImpl {
+public class MqttClientImplim {
     private String tcpUrl;
     private String clientId;
 

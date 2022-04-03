@@ -33,7 +33,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.75.Final</version>
+            <version>4.1.4.Final</version>
         </dependency>
 
         <!-- spring AOP 依赖 -->
@@ -100,6 +100,12 @@
             <version>2.0.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/netty-mqtt-2.0.0.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
         </dependency>
     </dependencies>
 
