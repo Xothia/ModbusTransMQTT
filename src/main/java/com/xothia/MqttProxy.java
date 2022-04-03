@@ -28,9 +28,9 @@ import org.springframework.stereotype.Component;
  * @Email : huaxia889900@126.com
  * @Description : mqtt网关，用于接收和发送mqtt报文。
  */
-@Component("mqttServer")
+@Component("mqttProxy")
 @PropertySource(value={"classpath:Mtm.properties"})
-public class MqttServer {
+public class MqttProxy {
     @Value("${gateway.port}")
     private Integer port; //服务端口号
 
@@ -55,7 +55,7 @@ public class MqttServer {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast("decoder", new MqttDecoder());
                         pipeline.addLast("encoder", MqttEncoder.INSTANCE);
-                        pipeline.addLast(new CoreHandler()); //业务handler
+                        pipeline.addLast(new ProxyFrontendHandler()); //业务handler
                     }
                 });
         logger.info("网关初始化完成.");

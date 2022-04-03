@@ -2,7 +2,6 @@ package com.xothia.bean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.paho.client.mqttv3.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +15,7 @@ import org.eclipse.paho.client.mqttv3.*;
  * @Email : huaxia889900@126.com
  * @Description :
  */
-public class MqttClientImpl implements MqttClientIn{
+public class MqttClientImpl {
     private String tcpUrl;
     private String clientId;
 
@@ -24,30 +23,30 @@ public class MqttClientImpl implements MqttClientIn{
 
     void init() throws Exception{
 
-
-        MqttClient client = new MqttClient(tcpUrl, clientId);
-        MqttConnectOptions mqcConf = new MqttConnectOptions();
-        mqcConf.setConnectionTimeout(300);
-        mqcConf.setKeepAliveInterval(1000);
-        client.connect(mqcConf);
-        client.setCallback(new MqttCallback(){
-            @Override
-            public void connectionLost(Throwable throwable) {
-                logger.warn("Connection Lost.");
-            }
-
-            @Override
-            public void messageArrived(String s, MqttMessage mqttMessage)  {
-                logger.info("Message Arrived.");
-
-
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                logger.info("Delivery Complete.");
-            }
-        });
+//
+//        MqttClient client = new MqttClient(tcpUrl, clientId);
+//        MqttConnectOptions mqcConf = new MqttConnectOptions();
+//        mqcConf.setConnectionTimeout(300);
+//        mqcConf.setKeepAliveInterval(1000);
+//        client.connect(mqcConf);
+//        client.setCallback(new MqttCallback(){
+//            @Override
+//            public void connectionLost(Throwable throwable) {
+//                logger.warn("Connection Lost.");
+//            }
+//
+//            @Override
+//            public void messageArrived(String s, MqttMessage mqttMessage)  {
+//                logger.info("Message Arrived.");
+//
+//
+//            }
+//
+//            @Override
+//            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+//                logger.info("Delivery Complete.");
+//            }
+//        });
 
         //client.subscribe(topicName);
     }

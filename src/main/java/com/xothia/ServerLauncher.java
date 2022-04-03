@@ -20,7 +20,7 @@ public class ServerLauncher {
     public static void main(String[] args) {
         //ApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
-        MqttServer server = context.getBean("mqttServer", MqttServer.class);
+        MqttProxy server = context.getBean("mqttProxy", MqttProxy.class);
         server.run();
     }
 }

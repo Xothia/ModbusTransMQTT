@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 //@Component
 //@PropertySource(value={"classpath:Mtm.properties"})
-public class CoreHandler extends ChannelInboundHandlerAdapter {
+public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     protected final Log logger = LogFactory.getLog(getClass()); //日志
     private final static DefaultEventLoopGroup group = new DefaultEventLoopGroup();
 
