@@ -84,6 +84,23 @@
             <artifactId>modbus4j</artifactId>
             <version>3.0.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.gandev</groupId>
+            <artifactId>modjn</artifactId>
+            <version>0.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/modjn-0.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+
+        <!--  Mqtt通讯库  -->
+        <dependency>
+            <groupId>nl.jk5.netty-mqtt</groupId>
+            <artifactId>netty-mqtt</artifactId>
+            <version>2.0.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/netty-mqtt-2.0.0.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
     </dependencies>
 
     <!--远程仓库-->

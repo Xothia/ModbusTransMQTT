@@ -7,6 +7,7 @@ import com.xothia.MqttServer;
 import com.xothia.bean.MqttClientImpl;
 import com.xothia.bean.MqttClientIn;
 import com.xothia.springConfig.SpringConfig;
+import de.gandev.modjn.example.Example;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -67,7 +68,11 @@ public class TestFunc {
             e.printStackTrace();
         }
 
-
     }
+    @Test
+    public void test5(){
+        Example.main(null);
+    }
+
 
 }
