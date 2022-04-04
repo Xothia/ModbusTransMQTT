@@ -71,20 +71,7 @@
             <version>2.17.2</version>
         </dependency>
 
-        <!--  MQTT V3.1 client 通讯库  -->
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-
         <!--  modbus通讯库  -->
-        <dependency>
-            <groupId>com.infiniteautomation</groupId>
-            <artifactId>modbus4j</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-
         <dependency>
             <groupId>de.gandev</groupId>
             <artifactId>modjn</artifactId>
@@ -93,13 +80,13 @@
             <systemPath>${basedir}/lib/modjn-0.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
         </dependency>
 
-        <!--  Mqtt通讯库  -->
+        <!--  MQTT V3.1 client 通讯库  -->
         <dependency>
-            <groupId>nl.jk5.netty-mqtt</groupId>
-            <artifactId>netty-mqtt</artifactId>
-            <version>2.0.0</version>
+            <groupId>org.jetlinks</groupId>
+            <artifactId>netty-mqtt-client</artifactId>
+            <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/netty-mqtt-2.0.0.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+            <systemPath>${basedir}/lib/netty-mqtt-client.jar</systemPath> <!--项目根目录下的lib文件夹下-->
         </dependency>
 
         <dependency>
