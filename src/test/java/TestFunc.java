@@ -1,17 +1,20 @@
 import com.xothia.MqttProxy;
+import com.xothia.bean.Conf;
+import com.xothia.springConfig.SpringConfig;
 import de.gandev.modjn.example.Example;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
-import org.jetlinks.mqtt.client.MqttClient;
-import org.jetlinks.mqtt.client.MqttClientConfig;
-import org.jetlinks.mqtt.client.MqttConnectResult;
-import org.jetlinks.mqtt.client.MqttHandler;
+import io.netty.util.concurrent.Future;
+import org.jetlinks.mqtt.client.*;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,23 +53,28 @@ public class TestFunc {
 
     @Test
     public void test4(){
-//        IpParameters ip = new IpParameters();
-//        ip.setHost("192.168.31.32");
-//        ModbusMaster tcpMaster = new ModbusFactory().createTcpMaster(ip, true);
-//        try{
-//            tcpMaster.init();
-//            //ReadHoldingRegistersResponse modbusResponse = (ReadHoldingRegistersResponse)tcpMaster.send(new ReadHoldingRegistersRequest(1, 0, 2));
-//            WriteRegisterResponse modbusResponse = (WriteRegisterResponse)tcpMaster.send(new WriteRegisterRequest(2, 1, 53));
-//            if(modbusResponse.isException()){
-//                System.out.println(modbusResponse.getExceptionMessage());
-//            }
-//            else{
-//                //System.out.println(Arrays.toString(modbusResponse.getShortData()));
-//                System.out.println(modbusResponse.getWriteValue());
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+        MqttClientConfig config = new MqttClientConfig();
+        config.setClientId("gwdxm71ywNi.N5Ly9CzuLWIyANQmQ5Jl|securemode=2,signmethod=hmacsha256,timestamp=1649002653400|");
+        config.setUsername("N5Ly9CzuLWIyANQmQ5Jl&gwdxm71ywNi");
+        config.setPassword("d6e3cc2528127203ccf832f7dfe2c19ff57f83a0d61519805d8d362f6949d731");
+        config.setProtocolVersion(MqttVersion.MQTT_3_1_1);
+
+        MqttClient mqttClient = MqttClient.create(config, new MqttHandler() {
+            @Override
+            public void onMessage(String s, ByteBuf byteBuf) {
+
+            }
+        });
+
+        Future<MqttConnectResult> connectResult = mqttClient.connect("iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com", 1883);
+
+
+        try {
+            MqttConnectResult result = connectResult.await().get();
+            System.out.println(result.getReturnCode());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
     @Test
@@ -101,6 +109,45 @@ public class TestFunc {
         }
 
     }
+    @Test
+    public void test7()throws Exception{
 
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        Conf config = context.getBean("conf", Conf.class);
+
+        EventLoopGroup loop = new NioEventLoopGroup();
+        MqttClient mqttClient = MqttClient.create(new MqttClientConfig(),((topic, payload) -> {
+            System.out.println(topic + "=>" + payload.toString(StandardCharsets.UTF_8));
+        }));
+        mqttClient.setEventLoop(loop);
+        mqttClient.getClientConfig().setClientId(config.clientId);
+        mqttClient.getClientConfig().setUsername(config.usesrname);
+        mqttClient.getClientConfig().setPassword(config.passwd);
+        mqttClient.getClientConfig().setProtocolVersion(MqttVersion.MQTT_3_1_1);
+        mqttClient.getClientConfig().setReconnect(true);
+        mqttClient.setCallback(new MqttClientCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+                cause.printStackTrace();
+            }
+
+            @Override
+            public void onSuccessfulReconnect() {
+
+            }
+        });
+        MqttConnectResult result = mqttClient.connect(config.mqttHostUrl, config.port).await().get();
+        if (result.getReturnCode() != MqttConnectReturnCode.CONNECTION_ACCEPTED) {
+            System.out.println("error:" + result.getReturnCode());
+            mqttClient.disconnect();
+        } else {
+            System.out.println("success");
+//    mqttClient.publish("test", Unpooled.copiedBuffer("{\"type\":\"event\"}", StandardCharsets.UTF_8));
+        }
+    }
+    @Test
+    public void test8(){
+        System.out.println(toString());;
+    }
 
 }
