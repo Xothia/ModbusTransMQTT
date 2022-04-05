@@ -1,6 +1,8 @@
 import com.xothia.MqttProxy;
 import com.xothia.bean.Conf;
 import com.xothia.springConfig.SpringConfig;
+import de.gandev.modjn.ModbusClient;
+import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
 import de.gandev.modjn.example.Example;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.EventLoopGroup;
@@ -49,8 +51,21 @@ public class TestFunc {
     }
 
     @Test
-    public void test3(){
-        Example.main(null);
+    public void test3() throws Exception{
+        //Modbus Master测试
+        ModbusClient modbusClient = new ModbusClient("127.0.0.1", 7770);
+        modbusClient.setup();
+//        modbusClient.setup(new ModbusResponseHandler() {
+//            @Override
+//            public void newResponse(ModbusFrame modbusFrame) {
+//                System.out.println(modbusFrame.toString());
+//            }
+//        });
+        ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
+        System.out.println(response);
+
+        modbusClient.close();
+
     }
 
     @Test
@@ -60,7 +75,7 @@ public class TestFunc {
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         Conf config = context.getBean("conf", Conf.class);
 
-        EventLoopGroup loop = new NioEventLoopGroup();
+        EventLoopGroup loop = new NioEventLoopGroup(); //!!!
         MqttClient mqttClient = MqttClient.create(new MqttClientConfig(),((topic, payload) -> {
             System.out.println(topic + "=>" + payload.toString(StandardCharsets.UTF_8));
         }));
@@ -95,6 +110,8 @@ public class TestFunc {
                 System.out.println(s + "=>" + byteBuf.toString(CharsetUtil.UTF_8));
             }
         });
+        mqttClient.disconnect();
+
         while(true){
 
         }
