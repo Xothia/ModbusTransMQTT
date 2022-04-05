@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
+import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import org.jetlinks.mqtt.client.*;
 import org.junit.Test;
@@ -30,87 +31,31 @@ import java.nio.charset.StandardCharsets;
  */
 public class TestFunc {
     @Test
-    public void test(){
+    public void test0(){
         ApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
         MqttProxy server = context.getBean("mqttProxy", MqttProxy.class);
     }
 
-//    @Test
-//    public void test2(){
-//        ApplicationContext ac = new AnnotationConfigApplicationContext(SpringConfig.class);
-//        MqttClientIn obj1 = ac.getBean("mqttClient", MqttClientImpl.class);
-//        MqttClientIn obj2 = ac.getBean("mqttClient", MqttClientImpl.class);
-//        System.out.println(obj1);
-//        System.out.println(obj2);
-//    }
-
     @Test
-    public void test3(){
+    public void test1(){
         System.out.println(Double.toString(Math.random()).substring(0,12));
         System.out.println(Double.toString(Math.random()).substring(0,12));
         System.out.println(Double.toString(Math.random()).substring(0,12));
     }
 
     @Test
-    public void test4(){
-        MqttClientConfig config = new MqttClientConfig();
-        config.setClientId("gwdxm71ywNi.N5Ly9CzuLWIyANQmQ5Jl|securemode=2,signmethod=hmacsha256,timestamp=1649002653400|");
-        config.setUsername("N5Ly9CzuLWIyANQmQ5Jl&gwdxm71ywNi");
-        config.setPassword("d6e3cc2528127203ccf832f7dfe2c19ff57f83a0d61519805d8d362f6949d731");
-        config.setProtocolVersion(MqttVersion.MQTT_3_1_1);
-
-        MqttClient mqttClient = MqttClient.create(config, new MqttHandler() {
-            @Override
-            public void onMessage(String s, ByteBuf byteBuf) {
-
-            }
-        });
-
-        Future<MqttConnectResult> connectResult = mqttClient.connect("iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com", 1883);
-
-
-        try {
-            MqttConnectResult result = connectResult.await().get();
-            System.out.println(result.getReturnCode());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-    @Test
-    public void test5(){
+    public void test2(){
         Example.main(null);
     }
 
     @Test
-    public void test6() throws Exception{
-        EventLoopGroup loop = new NioEventLoopGroup();
-        //MqttClient mqttClient = new MqttClientImpl(); mqttClient.creat
-        MqttClient mqttClient = MqttClient.create(new MqttClientConfig(), new MqttHandler() {
-            @Override
-            public void onMessage(String s, ByteBuf byteBuf) {
-
-            }
-        });
-
-        mqttClient.setEventLoop(loop);
-        mqttClient.getClientConfig().setClientId("gwdxm71ywNi.N5Ly9CzuLWIyANQmQ5Jl|securemode=2,signmethod=hmacsha256,timestamp=1649002653400|");
-        mqttClient.getClientConfig().setUsername("N5Ly9CzuLWIyANQmQ5Jl&gwdxm71ywNi");
-        mqttClient.getClientConfig().setPassword("d6e3cc2528127203ccf832f7dfe2c19ff57f83a0d61519805d8d362f6949d731");
-
-        mqttClient.getClientConfig().setProtocolVersion(MqttVersion.MQTT_3_1_1);
-
-        MqttConnectResult result = mqttClient.connect("iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com", 1883).await().get();
-        if (result.getReturnCode() != MqttConnectReturnCode.CONNECTION_ACCEPTED) {
-            System.out.println("error:" + result.getReturnCode());
-        } else {
-            System.out.println("success");
-//    mqttClient.publish("test", Unpooled.copiedBuffer("{\"type\":\"event\"}", StandardCharsets.UTF_8));
-        }
-
+    public void test3(){
+        Example.main(null);
     }
+
     @Test
-    public void test7()throws Exception{
+    public void test4()throws Exception{
+        //MQTT Client测试
 
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         Conf config = context.getBean("conf", Conf.class);
@@ -144,9 +89,19 @@ public class TestFunc {
             System.out.println("success");
 //    mqttClient.publish("test", Unpooled.copiedBuffer("{\"type\":\"event\"}", StandardCharsets.UTF_8));
         }
+        Future<Void> on = mqttClient.on("/broadcast/gwdxm71ywNi/hahaha", new MqttHandler() {
+            @Override
+            public void onMessage(String s, ByteBuf byteBuf) {
+                System.out.println(s + "=>" + byteBuf.toString(CharsetUtil.UTF_8));
+            }
+        });
+        while(true){
+
+        }
+
     }
     @Test
-    public void test8(){
+    public void test5(){
         System.out.println(toString());;
     }
 
