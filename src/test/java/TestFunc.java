@@ -13,11 +13,14 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import org.jetlinks.mqtt.client.*;
 import org.junit.Test;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -118,8 +121,28 @@ public class TestFunc {
 
     }
     @Test
-    public void test5(){
-        System.out.println(toString());;
+    public void test5() throws Exception{
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+        JobDetail jobDetail = JobBuilder.newJob(TestJob.class).withIdentity("fuf", "group1").build();
+        Trigger build = TriggerBuilder
+                .newTrigger()
+                .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(5))
+                .startNow()
+                .withIdentity("testTrigger", "group1")
+                .build();
+        scheduler.scheduleJob(jobDetail, build);
+        scheduler.start();
+        while(true){
+
+        }
+
+    }
+    //必须public
+    public static class TestJob implements Job {
+        @Override
+        public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+            System.out.println(new Date());
+        }
     }
 
 }
