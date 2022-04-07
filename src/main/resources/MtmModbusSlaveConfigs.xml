@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <ModbusDevices>
+        <ModbusSlave>
+            <HostAddress>127.0.0.1</HostAddress>
+            <HostPort>7777</HostPort>
+            <SlaveId>0</SlaveId>
+            <Pattens>
+                <Patten>
+                    <CronExpr>this is CronExpr</CronExpr>
+                    <IntervalInMilliseconds>This is Interval mill.</IntervalInMilliseconds>
+                    <Topics>
+                        <Topic>i am topic 1.</Topic>
+                        <Topic>i am topic 2.</Topic>
+                    </Topics>
+                </Patten>
+            </Pattens>
+        </ModbusSlave>
+        <ModbusSlave>
+            <HostAddress>127.0.0.1</HostAddress>
+            <HostPort>7778</HostPort>
+            <SlaveId>1</SlaveId>
+            <Pattens>
+                <Patten>
+                    <CronExpr>this is CronExpr</CronExpr>
+                    <IntervalInMilliseconds>This is Interval mill.</IntervalInMilliseconds>
+                    <Topics>
+                        <Topic>i am topic 1.</Topic>
+                        <Topic>i am topic 2.</Topic>
+                    </Topics>
+                </Patten>
+            </Pattens>
+        </ModbusSlave>
+    </ModbusDevices>
+</Configuration>

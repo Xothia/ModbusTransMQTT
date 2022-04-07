@@ -1,6 +1,7 @@
 import com.xothia.MqttProxy;
 import com.xothia.bean.Conf;
 import com.xothia.springConfig.SpringConfig;
+import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
 import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
 import de.gandev.modjn.example.Example;
@@ -11,6 +12,8 @@ import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
+import org.dom4j.Document;
+import org.dom4j.Element;
 import org.jetlinks.mqtt.client.*;
 import org.junit.Test;
 import org.quartz.*;
@@ -21,6 +24,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -122,8 +126,13 @@ public class TestFunc {
     }
     @Test
     public void test5() throws Exception{
+        //测试quartz
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-        JobDetail jobDetail = JobBuilder.newJob(TestJob.class).withIdentity("fuf", "group1").build();
+        JobDetail jobDetail = JobBuilder
+                .newJob(TestJob.class)
+                .withIdentity("fuf", "group1")
+                .usingJobData("count", 0)
+                .build();
         Trigger build = TriggerBuilder
                 .newTrigger()
                 .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(5))
@@ -133,16 +142,38 @@ public class TestFunc {
         scheduler.scheduleJob(jobDetail, build);
         scheduler.start();
         while(true){
-
         }
+        //scheduler.shutdown(true); //完成任务后再关闭
 
     }
     //必须public
+    @PersistJobDataAfterExecution //复用jobdata
     public static class TestJob implements Job {
         @Override
         public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-            System.out.println(new Date());
+            JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
+            int count = dataMap.getInt("count");
+            System.out.println(new Date()+" count:"+count);
+            dataMap.put("count", count+1);
+
         }
     }
+
+    @Test
+    public void test6(){
+        //测试DOM4J
+        Document dom = Util.load("MtmModbusSlaveConfigs.xml");
+        Element root = dom.getRootElement();
+
+        for (Iterator<Element> i = root.elementIterator(); i.hasNext();) {
+            Element el = i.next();
+            if (false) {
+                break;
+            }
+        }
+        System.out.println(root.getName());
+
+    }
+
 
 }
