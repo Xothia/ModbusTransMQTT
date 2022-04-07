@@ -12,6 +12,7 @@ import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -34,10 +35,18 @@ public class MqttProxy {
     @Value("${gateway.port}")
     private Integer port; //服务端口号
 
+    private ProxyFrontendHandler proxyFrontendHandler; //
+
     private NioEventLoopGroup bossGroup, workerGroup;
     private ServerBootstrap bootstrap;
 
     protected final Log logger = LogFactory.getLog(getClass()); //日志
+
+    @Autowired
+    public MqttProxy(ProxyFrontendHandler proxyFrontendHandler) {
+        this.proxyFrontendHandler = proxyFrontendHandler;
+        init();
+    }
 
     private void init(){ //创建对象 并初始化管道中handler
         logger.info("网关初始化...");
@@ -55,7 +64,7 @@ public class MqttProxy {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast("decoder", new MqttDecoder());
                         pipeline.addLast("encoder", MqttEncoder.INSTANCE);
-                        pipeline.addLast(new ProxyFrontendHandler()); //业务handler
+                        pipeline.addLast(proxyFrontendHandler); //业务handler
                     }
                 });
         logger.info("网关初始化完成.");
@@ -63,7 +72,6 @@ public class MqttProxy {
 
     public void run(){ //server启动
         try {
-            init();
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
             logger.info("网关正常工作.");
             channelFuture.channel().closeFuture().sync(); //一直监听关闭事件防止程序结束

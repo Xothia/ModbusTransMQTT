@@ -9,6 +9,9 @@ import io.netty.handler.codec.mqtt.MqttEncoder;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,19 +25,19 @@ import org.apache.commons.logging.LogFactory;
  * @Email : huaxia889900@126.com
  * @Description :
  */
-//@Component
-//@PropertySource(value={"classpath:Mtm.properties"})
+@Component
+@PropertySource(value={"classpath:Mtm.properties"})
 public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     protected final Log logger = LogFactory.getLog(getClass()); //日志
     private final static DefaultEventLoopGroup group = new DefaultEventLoopGroup();
 
     //目标远程broker url
-    //@Value("${gateway.remote.url}")
-    private String remoteHost="iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com";
+    @Value("${gateway.remote.url}")
+    private String remoteHost;
 
     //目标远程broker port
-   // @Value("${gateway.remote.port}")
-    private int remotePort=1883;
+    @Value("${gateway.remote.port}")
+    private int remotePort;
 
     //网关与broker之间的通道（从代理服务器出去所以是outbound过境）
     private volatile Channel outboundChannel;
@@ -42,7 +45,6 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     /**
      * 当mqtt客户端与网关建立tcp连接时执行
      * @param ctx 依赖注入
-     * @throws Exception
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
