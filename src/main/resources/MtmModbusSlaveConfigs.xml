@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
+
     <ModbusDevices>
+
         <ModbusSlave>
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7777</HostPort>
@@ -15,7 +17,20 @@
                     </Topics>
                 </Patten>
             </Pattens>
+
+            <TargetMqttBroker>
+                <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
+                <BrokerPort>ima defaultBrokerPort</BrokerPort>
+            </TargetMqttBroker>
+
+            <ProxyMqttClient>
+                <ClientId>imadefaultclientid</ClientId>
+                <Username>imadefaultUsername</Username>
+                <Password>imadefaultPassword</Password>
+            </ProxyMqttClient>
+
         </ModbusSlave>
+
         <ModbusSlave>
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7778</HostPort>
@@ -30,6 +45,24 @@
                     </Topics>
                 </Patten>
             </Pattens>
+
+            <TargetMqttBroker>
+                <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
+                <BrokerPort>ima defaultBrokerPort</BrokerPort>
+            </TargetMqttBroker>
+
+            <ProxyMqttClient>
+                <ClientId>imadefaultclientid</ClientId>
+                <Username>imadefaultUsername</Username>
+                <Password>imadefaultPassword</Password>
+            </ProxyMqttClient>
+
         </ModbusSlave>
+
     </ModbusDevices>
+
+    <MqttDevices>
+        waiting for finish.
+    </MqttDevices>
+
 </Configuration>

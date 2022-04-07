@@ -1,5 +1,14 @@
 package com.xothia.bean.modbusSlave;
 
+
+import com.xothia.util.Util;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Arrays;
 
 /**
@@ -16,15 +25,37 @@ import java.util.Arrays;
  * 可以选择cron表达式或者以毫秒为间隔的触发形式（二选一）
  *
  */
-class MbSlaveUpstreamPatten {
+@Valid
+@Component("mbUpsPatten")
+@Scope("prototype")
+public class MbSlaveUpstreamPatten implements InitializingBean {
+    @NotNull
     private String[] topics; //被发布数据的topics
     private String cronExpr; //Cron表达式
+    @PositiveOrZero
     private int intervalInMilliseconds; //触发间隔（毫秒）
 
-    MbSlaveUpstreamPatten(String[] topics, String cronExpr, int intervalInMilliseconds) {
+    public MbSlaveUpstreamPatten() {
+    }
+
+    public MbSlaveUpstreamPatten(String[] topics, String cronExpr) {
         this.topics = topics;
         this.cronExpr = cronExpr;
+        this.intervalInMilliseconds = 0;
+    }
+
+    public MbSlaveUpstreamPatten(String[] topics, int intervalInMilliseconds) {
+        this.topics = topics;
+        this.cronExpr = null;
         this.intervalInMilliseconds = intervalInMilliseconds;
+    }
+
+    @Override
+    public void afterPropertiesSet(){
+        Util.valid(this);
+        if(cronExpr.isBlank()&&intervalInMilliseconds==0){
+            throw new RuntimeException("Bean参数不合法，检查xml配置是否正确。");
+        }
     }
 
     public String[] getTopics() {

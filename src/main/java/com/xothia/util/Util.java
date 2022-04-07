@@ -1,8 +1,13 @@
 package com.xothia.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.File;
 
 /**
@@ -18,8 +23,16 @@ import java.io.File;
  * @Description : 工具类
  */
 public class Util {
-    public static String genClientId(){
-        return "123";
+    public static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+    public static final Log LOGGER = LogFactory.getLog(Util.class); //日志
+
+    public static void valid(Object obj) throws RuntimeException{
+        if(!VALIDATOR.validate(obj).isEmpty()){
+            ConstraintViolation<Object> firstMsg = VALIDATOR.validate(obj).iterator().next();
+            String errMsg = "Bean参数不合法，检查xml配置是否正确。"+firstMsg.toString();
+            LOGGER.fatal(errMsg);
+            throw new RuntimeException(errMsg);
+        }
     }
 
     //解析XML文件并返回DOM对象

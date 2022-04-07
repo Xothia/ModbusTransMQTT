@@ -12,6 +12,7 @@ import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("mqttProxy")
 @PropertySource(value={"classpath:Mtm.properties"})
-public class MqttProxy {
+public class MqttProxy implements InitializingBean {
     @Value("${gateway.port}")
     private Integer port; //服务端口号
 
@@ -45,10 +46,10 @@ public class MqttProxy {
     @Autowired
     public MqttProxy(ProxyFrontendHandler proxyFrontendHandler) {
         this.proxyFrontendHandler = proxyFrontendHandler;
-        init();
     }
 
-    private void init(){ //创建对象 并初始化管道中handler
+    @Override
+    public void afterPropertiesSet(){ //创建对象 并初始化管道中handler
         logger.info("网关初始化...");
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
