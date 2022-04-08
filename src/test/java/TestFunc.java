@@ -26,6 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -165,11 +166,14 @@ public class TestFunc {
         //测试DOM4J
         Document dom = Util.load("MtmModbusSlaveConfigs.xml");
         Element root = dom.getRootElement();
+        final List<Element> elementList = root.element("ModbusDevices").elements("ModbusSlave");
+        final Element modbusDevices = root.element("ModbusDevices");
+//        System.out.println(elementList.size());
 
-        for (Iterator<Element> i = root.elementIterator(); i.hasNext();) {
+        for (Iterator<Element> i = modbusDevices.elementIterator(); i.hasNext();) {
             Element el = i.next();
+            System.out.println(el.getName());
         }
-        System.out.println(root.getName());
     }
 
     @Test
