@@ -3,8 +3,6 @@ package com.xothia.bean.modbusSlave;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.util.Util;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +26,6 @@ import javax.validation.constraints.Positive;
 @Component
 @Scope("prototype")
 class MbTcpSlave implements MbSlave, InitializingBean {
-
-    private ApplicationContext ctx;
-
     @NotNull
     private String hostAddress; //tcp slave ip 地址
 
@@ -63,10 +58,6 @@ class MbTcpSlave implements MbSlave, InitializingBean {
         this.mqttClientManager = mqttClientManager;
     }
 
-    @Autowired
-    public MbTcpSlave(ApplicationContext ctx) {
-        this.ctx = ctx;
-    }
 
     @Override
     public MqttClientManager getMqttClientManager() {
@@ -108,9 +99,5 @@ class MbTcpSlave implements MbSlave, InitializingBean {
 
     public void setMqttClientManager(MqttClientManager mqttClientManager) {
         this.mqttClientManager = mqttClientManager;
-    }
-
-    public ApplicationContext getCtx() {
-        return ctx;
     }
 }

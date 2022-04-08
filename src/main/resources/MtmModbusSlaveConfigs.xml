@@ -10,17 +10,25 @@
             <Pattens>
                 <Patten>
                     <CronExpr>this is CronExpr</CronExpr>
-                    <IntervalInMilliseconds>This is Interval mill.</IntervalInMilliseconds>
+                    <IntervalInMilliseconds>111</IntervalInMilliseconds>
                     <Topics>
                         <Topic>i am topic 1.</Topic>
                         <Topic>i am topic 2.</Topic>
+                    </Topics>
+                </Patten>
+                <Patten>
+                    <CronExpr>this is CronExpr2</CronExpr>
+                    <IntervalInMilliseconds>222</IntervalInMilliseconds>
+                    <Topics>
+                        <Topic>i am topic 21.</Topic>
+                        <Topic>i am topic 22.</Topic>
                     </Topics>
                 </Patten>
             </Pattens>
 
             <TargetMqttBroker>
                 <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
-                <BrokerPort>ima defaultBrokerPort</BrokerPort>
+                <BrokerPort>9999</BrokerPort>
             </TargetMqttBroker>
 
             <ProxyMqttClient>

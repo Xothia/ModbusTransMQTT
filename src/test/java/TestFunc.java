@@ -1,6 +1,6 @@
 import com.xothia.MqttProxy;
 import com.xothia.bean.Conf;
-import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
+import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.springConfig.SpringConfig;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
@@ -180,9 +180,11 @@ public class TestFunc {
     public void test7() throws Exception{
         //测试validator
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
-        String[] strings = new String[]{"ab", "cd"};
-        MbSlaveUpstreamPatten patten1 = (MbSlaveUpstreamPatten)context.getBean("mbUpsPatten", new Object[]{strings, "baha"});
-        Util.valid(patten1);
+        final MbSlaveGroup group = context.getBean("mbSlaveGroup", MbSlaveGroup.class);
+
+//        String[] strings = new String[]{"ab", "cd"};
+//        MbSlaveUpstreamPatten patten1 = (MbSlaveUpstreamPatten)context.getBean("mbUpsPatten", new Object[]{strings, "baha"});
+//        Util.valid(patten1);
 
     }
 
