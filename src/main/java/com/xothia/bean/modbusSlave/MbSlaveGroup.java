@@ -118,7 +118,7 @@ public class MbSlaveGroup implements InitializingBean {
     private MqttClientManager mqttClientManagerBuilder(MqttConfig conf, ApplicationContext ctx){
         //待施工
 
-        return new MqttClientManager();
+        return ctx.getBean(MqttClientManager.class, (Object)conf);
     }
 
     //解析XML配置文件中UpstreamPattens标签
@@ -165,7 +165,7 @@ public class MbSlaveGroup implements InitializingBean {
         return slaveGroup;
     }
 
-    private static class MqttConfig {
+    public static class MqttConfig {
         //无需校验参数，空缺将从properties配置中获取默认值。
         public String BrokerAddress;
         public Integer BrokerPort;

@@ -1,6 +1,7 @@
 import com.xothia.MqttProxy;
 import com.xothia.bean.Conf;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
+import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.springConfig.SpringConfig;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
@@ -126,6 +127,21 @@ public class TestFunc {
         }
 
     }
+
+    @Test
+    public void test4_1()throws Exception{
+        //MQTT Client测试
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        final MqttClientManager manager = context.getBean("mqttCliManager", MqttClientManager.class);
+
+
+        while (true){
+
+        }
+
+    }
+
     @Test
     public void test5() throws Exception{
         //测试quartz
