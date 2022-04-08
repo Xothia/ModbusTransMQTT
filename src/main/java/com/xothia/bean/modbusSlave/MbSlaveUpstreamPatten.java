@@ -38,6 +38,12 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
     public MbSlaveUpstreamPatten() {
     }
 
+    public MbSlaveUpstreamPatten(String[] topics, String cronExpr, int intervalInMilliseconds) {
+        this.topics = topics;
+        this.cronExpr = cronExpr;
+        this.intervalInMilliseconds = intervalInMilliseconds;
+    }
+
     public MbSlaveUpstreamPatten(String[] topics, String cronExpr) {
         this.topics = topics;
         this.cronExpr = cronExpr;
