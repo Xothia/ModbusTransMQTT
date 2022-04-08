@@ -28,8 +28,6 @@ import java.util.List;
  */
 @Component
 public class MbSlaveGroup implements InitializingBean {
-    private static final int ConstructorArgs = 5;
-    private static final int pattenArgs = 5;
 
     @NotNull
     private final MbSlave[] slaveGroup;
@@ -49,8 +47,8 @@ public class MbSlaveGroup implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        //Util.valid(this);
+    public void afterPropertiesSet(){
+        Util.valid(this);
     }
 
     //解析XML配置文件中ModbusSlave标签
@@ -62,8 +60,11 @@ public class MbSlaveGroup implements InitializingBean {
             Element ele = i.next();
 
             switch (ele.getName()){
-                case "Pattens":
-                    map.put("Pattens", getPattens(ele, ctx));
+                case "UpstreamPattens":
+                    map.put("UpstreamPattens", getPattens(ele, ctx));
+                    break;
+                case "DownstreamTopics":
+                    map.put("DownstreamTopics", getDownTopics(ele, ctx));
                     break;
 
                 case "TargetMqttBroker":
@@ -80,13 +81,22 @@ public class MbSlaveGroup implements InitializingBean {
                     map.put(ele.getName(), Integer.parseInt(ele.getTextTrim()));
                     break;
             }
-
         }
-
         //构建Manager
         map.put("MqttClientManager", mqttClientManagerBuilder(conf, ctx));
 
-        return ctx.getBean(MbTcpSlave.class, map.get("HostAddress"), map.get("HostPort"), map.get("SlaveId"), map.get("Pattens"), map.get("MqttClientManager"));
+        return ctx.getBean(MbTcpSlave.class, map.get("HostAddress"), map.get("HostPort"), map.get("SlaveId"), map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"));
+    }
+
+    private MbSlaveDownstreamPatten getDownTopics(Element downTopics, ApplicationContext ctx) {
+        final List<Element> topicList = downTopics.elements("Topic");
+        final String[] topics = new String[topicList.size()];
+        int index=0;
+        for (Element e:topicList) {
+            topics[index++] = e.getTextTrim();
+        }
+
+        return ctx.getBean(MbSlaveDownstreamPatten.class, (Object)topics);
     }
 
     //解析XML配置文件中Mqtt相关标签
@@ -108,12 +118,12 @@ public class MbSlaveGroup implements InitializingBean {
     private MqttClientManager mqttClientManagerBuilder(MqttConfig conf, ApplicationContext ctx){
         //待施工
 
-        return null;
+        return new MqttClientManager();
     }
 
-    //解析XML配置文件中Pattens标签
+    //解析XML配置文件中UpstreamPattens标签
     private MbSlaveUpstreamPatten[] getPattens(Element pattens, ApplicationContext ctx){
-        final List<Element> pattenList = pattens.elements("Patten");
+        final List<Element> pattenList = pattens.elements("UpstreamPatten");
         final MbSlaveUpstreamPatten[] res = new MbSlaveUpstreamPatten[pattenList.size()];
 
         int index=0;
@@ -123,7 +133,7 @@ public class MbSlaveGroup implements InitializingBean {
         return res;
     }
 
-    //解析单个Patten
+    //解析单个UpstreamPatten
     private MbSlaveUpstreamPatten getPatten(Element patten, ApplicationContext ctx) {
         final HashMap<String, Object> map = new HashMap<>();
 
@@ -146,9 +156,7 @@ public class MbSlaveGroup implements InitializingBean {
                 case "IntervalInMilliseconds":
                     map.put("IntervalInMilliseconds", Integer.parseInt(ele.getTextTrim()));
                     break;
-
             }
-
         }
         return ctx.getBean(MbSlaveUpstreamPatten.class, map.get("Topics"),map.get("CronExpr"),map.get("IntervalInMilliseconds"));
     }

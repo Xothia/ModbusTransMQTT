@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,11 +32,14 @@ class MbTcpSlave implements MbSlave, InitializingBean {
     @NotNull
     private Integer hostPort; //tcp slave 端口号
 
-    @NotNull @Positive
+    @PositiveOrZero
     private Integer slaveId; //slave 设备标识号，仅对通过Tcp网关接入的串行设备有意义
 
     @NotNull
     private MbSlaveUpstreamPatten[] upstreamPatten; //上报数据行为的描述
+
+    @NotNull
+    private MbSlaveDownstreamPatten downstreamPatten; //上报数据行为的描述
 
     @NotNull
     private MqttClientManager mqttClientManager; //对应MqttClient的引用 未完工
@@ -49,15 +52,14 @@ class MbTcpSlave implements MbSlave, InitializingBean {
     public MbTcpSlave() {
     }
 
-
-    public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MqttClientManager mqttClientManager) {
+    public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager) {
         this.hostAddress = hostAddress;
         this.hostPort = hostPort;
         this.slaveId = slaveId;
         this.upstreamPatten = upstreamPatten;
+        this.downstreamPatten = downstreamPatten;
         this.mqttClientManager = mqttClientManager;
     }
-
 
     @Override
     public MqttClientManager getMqttClientManager() {
@@ -99,5 +101,13 @@ class MbTcpSlave implements MbSlave, InitializingBean {
 
     public void setMqttClientManager(MqttClientManager mqttClientManager) {
         this.mqttClientManager = mqttClientManager;
+    }
+
+    public MbSlaveDownstreamPatten getDownstreamPatten() {
+        return downstreamPatten;
+    }
+
+    public void setDownstreamPatten(MbSlaveDownstreamPatten downstreamPatten) {
+        this.downstreamPatten = downstreamPatten;
     }
 }

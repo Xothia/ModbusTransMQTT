@@ -7,24 +7,29 @@
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7777</HostPort>
             <SlaveId>0</SlaveId>
-            <Pattens>
-                <Patten>
+            <UpstreamPattens>
+                <UpstreamPatten>
                     <CronExpr>this is CronExpr</CronExpr>
                     <IntervalInMilliseconds>111</IntervalInMilliseconds>
                     <Topics>
                         <Topic>i am topic 1.</Topic>
                         <Topic>i am topic 2.</Topic>
                     </Topics>
-                </Patten>
-                <Patten>
+                </UpstreamPatten>
+                <UpstreamPatten>
                     <CronExpr>this is CronExpr2</CronExpr>
                     <IntervalInMilliseconds>222</IntervalInMilliseconds>
                     <Topics>
                         <Topic>i am topic 21.</Topic>
                         <Topic>i am topic 22.</Topic>
                     </Topics>
-                </Patten>
-            </Pattens>
+                </UpstreamPatten>
+            </UpstreamPattens>
+
+            <DownstreamTopics>
+                <Topic>i am down topic 21.</Topic>
+                <Topic>i am down topic 22.</Topic>
+            </DownstreamTopics>
 
             <TargetMqttBroker>
                 <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
@@ -43,20 +48,26 @@
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7778</HostPort>
             <SlaveId>1</SlaveId>
-            <Pattens>
-                <Patten>
+            <UpstreamPattens>
+                <UpstreamPatten>
                     <CronExpr>this is CronExpr</CronExpr>
-                    <IntervalInMilliseconds>This is Interval mill.</IntervalInMilliseconds>
+                    <IntervalInMilliseconds>123</IntervalInMilliseconds>
+
+                    <!--可以为空但必须有 之后会改-->
                     <Topics>
                         <Topic>i am topic 1.</Topic>
                         <Topic>i am topic 2.</Topic>
                     </Topics>
-                </Patten>
-            </Pattens>
+                </UpstreamPatten>
+            </UpstreamPattens>
+
+            <!--可以为空但必须有 之后会改-->
+            <DownstreamTopics>
+            </DownstreamTopics>
 
             <TargetMqttBroker>
                 <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
-                <BrokerPort>ima defaultBrokerPort</BrokerPort>
+                <BrokerPort>6788</BrokerPort>
             </TargetMqttBroker>
 
             <ProxyMqttClient>
