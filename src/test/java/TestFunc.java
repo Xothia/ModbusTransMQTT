@@ -14,6 +14,7 @@ import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
+import io.netty.util.internal.StringUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.jetlinks.mqtt.client.*;
@@ -197,10 +198,23 @@ public class TestFunc {
         //测试validator
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         final MbSlaveGroup group = context.getBean("mbSlaveGroup", MbSlaveGroup.class);
-
+        System.out.println("test");
 //        String[] strings = new String[]{"ab", "cd"};
 //        MbSlaveUpstreamPatten patten1 = (MbSlaveUpstreamPatten)context.getBean("mbUpsPatten", new Object[]{strings, "baha"});
 //        Util.valid(patten1);
+
+    }
+
+    @Test
+    public void test8() throws Exception{
+
+        String str=null;
+        System.out.println(StringUtil.isNullOrEmpty(str));
+        str="null";
+        System.out.println(StringUtil.isNullOrEmpty(str));
+        str="   ";
+        System.out.println(StringUtil.isNullOrEmpty(str));
+
 
     }
 

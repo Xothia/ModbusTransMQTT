@@ -6,10 +6,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
+import io.netty.util.concurrent.Future;
+import org.jetlinks.mqtt.client.*;
 import org.jetlinks.mqtt.client.MqttClient;
-import org.jetlinks.mqtt.client.MqttClientCallback;
-import org.jetlinks.mqtt.client.MqttClientConfig;
-import org.jetlinks.mqtt.client.MqttConnectResult;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -39,7 +38,7 @@ import java.nio.charset.StandardCharsets;
 @Component("mqttCliManager")
 @Scope("prototype")
 @PropertySource(value={"classpath:Mtm.properties"})
-public class MqttClientManager implements InitializingBean {
+public class MqttClientManager implements InitializingBean, com.xothia.bean.mqttClient.MqttClient {
     @NotNull
     private MqttClient mqttClient;
 
@@ -52,6 +51,25 @@ public class MqttClientManager implements InitializingBean {
     @NotNull
     private static final MqttVersion MQTT_VER = MqttVersion.MQTT_3_1_1;
 
+    @Value("${gateway.modbusDevice.defaultMqttClient.clientId}")
+    private String defaultClientId;
+
+    @Value("${gateway.modbusDevice.defaultMqttClient.userName}")
+    private String defaultUsername;
+
+    @Value("${gateway.modbusDevice.defaultMqttClient.password}")
+    private String defaultPassword;
+
+    @Value("${gateway.modbusDevice.defaultMqttBroker.hostAddress}")
+    private String defaultHostAddress;
+
+    @Value("${gateway.modbusDevice.defaultMqttBroker.hostPort}")
+    private Integer defaultHostPort;
+
+    @NotNull
+    private MbSlaveGroup.MqttConfig conf;
+
+
     static{
         //初始化线程池
         loopGroup = new NioEventLoopGroup(PUBLIC_THEAD_NUM);
@@ -61,6 +79,26 @@ public class MqttClientManager implements InitializingBean {
     }
 
     public MqttClientManager(MbSlaveGroup.MqttConfig conf) {
+        this.conf=conf;
+    }
+
+    //从conf获取参数，若无则读取默认参数。
+
+    private MqttClientConfig conf2Config(MbSlaveGroup.MqttConfig myConf){
+        final MqttClientConfig config = new MqttClientConfig();
+
+        config.setClientId(Util.isNullOrBlank(myConf.ClientId)?defaultClientId:myConf.ClientId);
+        config.setUsername(Util.isNullOrBlank(myConf.Username)?defaultUsername:myConf.Username);
+        config.setPassword(Util.isNullOrBlank(myConf.Password)?defaultPassword:myConf.Password);
+
+        config.setProtocolVersion(MQTT_VER);
+        config.setReconnect(true);
+        return config;
+    }
+
+
+    @Override
+    public void afterPropertiesSet(){
         //创建mqttclient 并建立同MQTT Broker的连接
         mqttClient = MqttClient.create(conf2Config(conf), ((topic, payload) -> {
             Util.LOGGER.info("Default Handler: " + topic + "=>" + payload.toString(StandardCharsets.UTF_8));
@@ -77,9 +115,17 @@ public class MqttClientManager implements InitializingBean {
                 Util.LOGGER.info(mqttClient.getClientConfig().getClientId()+"Successful Reconnect to Broker.");
             }
         });
+        //参数设置完毕
+        Util.valid(this);
+    }
+
+    @Override
+    public void doConnect(){
         MqttConnectResult result;
         try{
-            result = mqttClient.connect(conf.BrokerAddress, conf.BrokerPort).await().get();
+            result = mqttClient.connect(Util.isNullOrBlank(conf.BrokerAddress)?defaultHostAddress:conf.BrokerAddress,
+                    (conf.BrokerPort==null)?defaultHostPort:conf.BrokerPort)
+                    .await().get();
         }catch (Exception e){
             Util.LOGGER.error("mqtt client failed establishing tcp connection to broker."+e.getMessage());
             mqttClient.disconnect();
@@ -92,27 +138,29 @@ public class MqttClientManager implements InitializingBean {
         } else {
             Util.LOGGER.info("mqtt client is connected to broker.");
         }
-        //MQTT连接完成，初始化结束。
+        //MQTT连接完成。
     }
-
-    private MqttClientConfig conf2Config(MbSlaveGroup.MqttConfig myConf){
-        final MqttClientConfig config = new MqttClientConfig();
-        config.setClientId(myConf.ClientId);
-        config.setUsername(myConf.Username);
-        config.setPassword(myConf.Password);
-        config.setProtocolVersion(MQTT_VER);
-        config.setReconnect(true);
-        return config;
-    }
-
 
     @Override
-    public void afterPropertiesSet(){
-        Util.valid(this);
+    public Future<Void> subscribe(String topic, MqttHandler handler){
+        //等待添加指令报文解析。 handler应被extend并完善解析下达指令功能。
+
+        return mqttClient.on(topic, handler);
+    }
+
+    public void publish(String topic, Object data){
+        //等待上报模型建立。
+
+        return;
+    }
+
+    @Override
+    public void disconnect() {
+        mqttClient.disconnect();
     }
 
     @Value("${gateway.modbusDevice.mqttClient-threads}")
-    public static void setPublicTheadNum(int publicTheadNum) {
+    public void setPublicTheadNum(int publicTheadNum) {
         PUBLIC_THEAD_NUM = publicTheadNum;
     }
 

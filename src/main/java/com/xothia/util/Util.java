@@ -47,4 +47,8 @@ public class Util {
         return document;
     }
 
+    public static Boolean isNullOrBlank(String str){
+        return (str==null||str.isBlank());
+    }
+
 }

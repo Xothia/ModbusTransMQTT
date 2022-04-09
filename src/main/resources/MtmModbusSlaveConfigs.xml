@@ -31,15 +31,17 @@
                 <Topic>i am down topic 22.</Topic>
             </DownstreamTopics>
 
+            <!--  可选项：没有则用Mtm中默认broker  -->
             <TargetMqttBroker>
-                <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
-                <BrokerPort>9999</BrokerPort>
+                <BrokerAddress>iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com</BrokerAddress>
+                <BrokerPort>1883</BrokerPort>
             </TargetMqttBroker>
 
+            <!--  可选项：没有则用Mtm中默认client  -->
             <ProxyMqttClient>
-                <ClientId>imadefaultclientid</ClientId>
-                <Username>imadefaultUsername</Username>
-                <Password>imadefaultPassword</Password>
+                <ClientId></ClientId>
+                <Username></Username>
+                <Password></Password>
             </ProxyMqttClient>
 
         </ModbusSlave>

@@ -59,7 +59,7 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
     @Override
     public void afterPropertiesSet(){
         Util.valid(this);
-        if(cronExpr.isBlank()&&intervalInMilliseconds==0){
+        if(Util.isNullOrBlank(cronExpr)&&intervalInMilliseconds==0){
             throw new RuntimeException("Bean参数不合法，检查xml配置是否正确。");
         }
     }
