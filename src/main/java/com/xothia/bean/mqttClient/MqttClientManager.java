@@ -136,7 +136,7 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
             Util.LOGGER.error("broker refused mqtt client." + result.getReturnCode());
             mqttClient.disconnect();
         } else {
-            Util.LOGGER.info("mqtt client is connected to broker.");
+            Util.LOGGER.info(mqttClient.getClientConfig().getClientId() + ": mqtt client is connected to broker.");
         }
         //MQTT连接完成。
     }
@@ -150,6 +150,7 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
 
     public void publish(String topic, Object data){
         //等待上报模型建立。
+        //mqttClient.publish(topic, );
 
         return;
     }

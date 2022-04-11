@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Arrays;
@@ -30,6 +31,9 @@ import java.util.Arrays;
 @Component("mbUpsPatten")
 @Scope("prototype")
 public class MbSlaveUpstreamPatten implements InitializingBean {
+    @NotNull @PositiveOrZero @Max(2)
+    private Integer qos = 0;
+
     @NotNull
     private String[] topics; //被发布数据的topics
     private String cronExpr; //Cron表达式
@@ -40,6 +44,14 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
     private Attribute[] attributes; //上报数据具体参数
 
     public MbSlaveUpstreamPatten() {
+    }
+
+    public MbSlaveUpstreamPatten(Integer qos, String[] topics, String cronExpr, int intervalInMilliseconds, Attribute[] attributes) {
+        this.qos = qos;
+        this.topics = topics;
+        this.cronExpr = cronExpr;
+        this.intervalInMilliseconds = intervalInMilliseconds;
+        this.attributes = attributes;
     }
 
     public MbSlaveUpstreamPatten(String[] topics, String cronExpr, int intervalInMilliseconds, Attribute[] attributes) {
@@ -101,6 +113,10 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
 
     public Attribute[] getAttributes() {
         return attributes;
+    }
+
+    public Integer getQos() {
+        return qos;
     }
 
     @Override

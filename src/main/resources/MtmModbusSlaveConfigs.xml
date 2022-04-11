@@ -10,6 +10,8 @@
             <UpstreamPattens>
                 <!--  配置上报周期、上报topic、上报属性、数据来源  -->
                 <UpstreamPatten>
+                    <!--  默认为0  -->
+<!--                    <Qos>0</Qos>-->
                     <CronExpr>this is CronExpr</CronExpr>
                     <IntervalInMilliseconds>111</IntervalInMilliseconds>
                     <Topics>
@@ -21,9 +23,9 @@
                             <!--  必须  -->
                             <AttrName>temperature</AttrName>
                             <!--  默认为0  -->
-                            <Address>0</Address>
+<!--                            <Address>0</Address>-->
                             <!--  默认为1  -->
-                            <Quantity>1</Quantity>
+<!--                            <Quantity>1</Quantity>-->
                         </Attribute>
                         <Attribute>
                             <!--  必须  -->
@@ -39,6 +41,8 @@
                 </UpstreamPatten>
 
                 <UpstreamPatten>
+                    <!--  默认为0  -->
+                    <Qos>0</Qos>
                     <CronExpr>this is CronExpr2</CronExpr>
                     <IntervalInMilliseconds>222</IntervalInMilliseconds>
                     <Topics>
@@ -86,6 +90,8 @@
             <SlaveId>1</SlaveId>
             <UpstreamPattens>
                 <UpstreamPatten>
+                    <!--  默认为0  -->
+                    <Qos>0</Qos>
                     <CronExpr>this is CronExpr</CronExpr>
                     <IntervalInMilliseconds>123</IntervalInMilliseconds>
 

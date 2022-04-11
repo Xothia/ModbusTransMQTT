@@ -150,6 +150,10 @@ public class MbSlaveGroup implements InitializingBean {
         for (Iterator<Element> i = patten.elementIterator(); i.hasNext();) {
             Element ele = i.next();
             switch (ele.getName()){
+                case "Qos":
+                    map.put("Qos", Integer.parseInt(ele.getTextTrim()));
+                    break;
+
                 case "CronExpr":
                     map.put("CronExpr", ele.getTextTrim());
                     break;
@@ -164,7 +168,7 @@ public class MbSlaveGroup implements InitializingBean {
 
             }
         }
-        return ctx.getBean(MbSlaveUpstreamPatten.class, map.get("Topics"),map.get("CronExpr"),map.get("IntervalInMilliseconds"), map.get("Attributes"));
+        return ctx.getBean(MbSlaveUpstreamPatten.class, map.getOrDefault("Qos", 0),map.get("Topics"),map.get("CronExpr"),map.get("IntervalInMilliseconds"), map.get("Attributes"));
     }
 
     //解析attributes标签
@@ -198,7 +202,7 @@ public class MbSlaveGroup implements InitializingBean {
                     break;
             }
         }
-        return ctx.getBean(Attribute.class, map.get("AttrName"), map.get("Address"), map.get("Quantity"));
+        return ctx.getBean(Attribute.class, map.get("AttrName"), map.getOrDefault("Address", 0), map.getOrDefault("Quantity", 1));
     }
 
 
