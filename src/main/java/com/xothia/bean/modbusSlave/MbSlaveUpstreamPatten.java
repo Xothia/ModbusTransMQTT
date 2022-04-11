@@ -1,6 +1,7 @@
 package com.xothia.bean.modbusSlave;
 
 
+import com.xothia.util.Attribute;
 import com.xothia.util.Util;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
@@ -35,7 +36,17 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
     @PositiveOrZero
     private int intervalInMilliseconds; //触发间隔（毫秒）
 
+    @NotNull
+    private Attribute[] attributes; //上报数据具体参数
+
     public MbSlaveUpstreamPatten() {
+    }
+
+    public MbSlaveUpstreamPatten(String[] topics, String cronExpr, int intervalInMilliseconds, Attribute[] attributes) {
+        this.topics = topics;
+        this.cronExpr = cronExpr;
+        this.intervalInMilliseconds = intervalInMilliseconds;
+        this.attributes = attributes;
     }
 
     public MbSlaveUpstreamPatten(String[] topics, String cronExpr, int intervalInMilliseconds) {
@@ -88,12 +99,17 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
         this.intervalInMilliseconds = intervalInMilliseconds;
     }
 
+    public Attribute[] getAttributes() {
+        return attributes;
+    }
+
     @Override
     public String toString() {
         return "MbSlaveUpstreamPatten{" +
                 "topics=" + Arrays.toString(topics) +
                 ", cronExpr='" + cronExpr + '\'' +
                 ", intervalInMilliseconds=" + intervalInMilliseconds +
+                ", attributes=" + Arrays.toString(attributes) +
                 '}';
     }
 }

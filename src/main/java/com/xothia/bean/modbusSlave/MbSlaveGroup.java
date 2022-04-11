@@ -1,6 +1,7 @@
 package com.xothia.bean.modbusSlave;
 
 import com.xothia.bean.mqttClient.MqttClientManager;
+import com.xothia.util.Attribute;
 import com.xothia.util.Util;
 import org.dom4j.Element;
 import org.springframework.beans.factory.InitializingBean;
@@ -156,10 +157,50 @@ public class MbSlaveGroup implements InitializingBean {
                 case "IntervalInMilliseconds":
                     map.put("IntervalInMilliseconds", Integer.parseInt(ele.getTextTrim()));
                     break;
+
+                case "Attributes":
+                    map.put("Attributes", getAttributes(ele, ctx));
+                    break;
+
             }
         }
-        return ctx.getBean(MbSlaveUpstreamPatten.class, map.get("Topics"),map.get("CronExpr"),map.get("IntervalInMilliseconds"));
+        return ctx.getBean(MbSlaveUpstreamPatten.class, map.get("Topics"),map.get("CronExpr"),map.get("IntervalInMilliseconds"), map.get("Attributes"));
     }
+
+    //解析attributes标签
+    private Attribute[] getAttributes(Element attributes, ApplicationContext ctx){
+        final List<Element> attrList = attributes.elements("Attribute");
+        final Attribute[] res = new Attribute[attrList.size()];
+
+        int index=0;
+        for (Element attr:attrList) {
+            res[index++] = getAttribute(attr, ctx);
+        }
+        return res;
+
+    }
+
+    private Attribute getAttribute(Element attr, ApplicationContext ctx){
+        final HashMap<String, Object> map = new HashMap<>();
+        for (Iterator<Element> i = attr.elementIterator(); i.hasNext();) {
+            Element ele = i.next();
+            switch (ele.getName()){
+                case "AttrName":
+                    map.put("AttrName", ele.getTextTrim());
+                    break;
+
+                case "Address":
+                    map.put("Address", Integer.parseInt(ele.getTextTrim()));
+                    break;
+
+                case "Quantity":
+                    map.put("Quantity", Integer.parseInt(ele.getTextTrim()));
+                    break;
+            }
+        }
+        return ctx.getBean(Attribute.class, map.get("AttrName"), map.get("Address"), map.get("Quantity"));
+    }
+
 
     public MbSlave[] getSlaveGroup() {
         return slaveGroup;

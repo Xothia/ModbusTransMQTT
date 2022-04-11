@@ -45,17 +45,19 @@
                         <Topic>i am topic 21.</Topic>
                         <Topic>i am topic 22.</Topic>
                     </Topics>
+                    <Attributes>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>temperature</AttrName>
+                            <!--  默认为0  -->
+                            <Address>0</Address>
+                            <!--  默认为1  -->
+                            <Quantity>1</Quantity>
+                        </Attribute>
+                    </Attributes>
+
                 </UpstreamPatten>
-                <Attributes>
-                    <Attribute>
-                        <!--  必须  -->
-                        <AttrName>temperature</AttrName>
-                        <!--  默认为0  -->
-                        <Address>0</Address>
-                        <!--  默认为1  -->
-                        <Quantity>1</Quantity>
-                    </Attribute>
-                </Attributes>
+
             </UpstreamPattens>
 
             <DownstreamTopics>
