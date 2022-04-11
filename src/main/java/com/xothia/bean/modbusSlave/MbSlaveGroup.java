@@ -79,6 +79,7 @@ public class MbSlaveGroup implements InitializingBean {
                     break;
 
                 case "HostPort":
+                case "Function":
                 case "SlaveId":
                     map.put(ele.getName(), Integer.parseInt(ele.getTextTrim()));
                     break;
@@ -90,13 +91,11 @@ public class MbSlaveGroup implements InitializingBean {
         //构建Modbus master manager
         map.put("MbMasterManager", buildMbMasterManager(map, ctx));
 
-        return ctx.getBean(MbTcpSlave.class, map.get("HostAddress"), map.get("HostPort"), map.get("SlaveId"), map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
+        return ctx.getBean(MbTcpSlave.class, map.getOrDefault("SlaveId", 0), map.getOrDefault("Function", 0),map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
     }
 
     private MbMasterManager buildMbMasterManager(HashMap<String, Object> map, ApplicationContext ctx){
-        //待施工
-
-        return ctx.getBean(MbMasterManager.class);
+        return ctx.getBean(MbMasterManager.class, map.getOrDefault("HostAddress", "127.0.0.1"), map.getOrDefault("HostPort", 502), map.get("MqttClientManager"));
     }
 
     private MbSlaveDownstreamPatten getDownTopics(Element downTopics, ApplicationContext ctx) {

@@ -4,9 +4,21 @@
     <ModbusDevices>
 
         <ModbusSlave>
+            <!--  默认127.0.0.1  -->
             <HostAddress>127.0.0.1</HostAddress>
+
+            <!--  默认502  -->
             <HostPort>7777</HostPort>
+
+            <!--  默认0  -->
             <SlaveId>0</SlaveId>
+
+            <!--  默认3  -->
+            <!--  1 read coils -->
+            <!--  2 read discrete inputs  -->
+            <!--  3 read holding registers  -->
+            <!--  4 read input registers  -->
+            <Function>3</Function>
             <UpstreamPattens>
                 <!--  配置上报周期、上报topic、上报属性、数据来源  -->
                 <UpstreamPatten>
@@ -88,6 +100,7 @@
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7778</HostPort>
             <SlaveId>1</SlaveId>
+            <Function>3</Function>
             <UpstreamPattens>
                 <UpstreamPatten>
                     <!--  默认为0  -->

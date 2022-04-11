@@ -3,18 +3,20 @@ import com.xothia.bean.Conf;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.springConfig.SpringConfig;
+import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
-import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
+import de.gandev.modjn.entity.ModbusFrame;
 import de.gandev.modjn.example.Example;
+import de.gandev.modjn.handler.ModbusResponseHandler;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttVersion;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
-import io.netty.util.internal.StringUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.jetlinks.mqtt.client.*;
@@ -65,17 +67,23 @@ public class TestFunc {
     public void test3() throws Exception{
         //Modbus Master测试
         ModbusClient modbusClient = new ModbusClient("127.0.0.1", 7770);
-        modbusClient.setup();
-//        modbusClient.setup(new ModbusResponseHandler() {
-//            @Override
-//            public void newResponse(ModbusFrame modbusFrame) {
-//                System.out.println(modbusFrame.toString());
-//            }
-//        });
-        ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
-        System.out.println(response);
+        //modbusClient.setup();
+        modbusClient.setup(new ModbusResponseHandler() {
+            @Override
+            public void newResponse(ModbusFrame modbusFrame) {
+                System.out.println(modbusFrame.toString());
+            }
+        });
 
-        modbusClient.close();
+        modbusClient.readHoldingRegistersAsync(0, 1);
+        //ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
+        //System.out.println(response);
+
+
+        while(true){
+
+        }
+        //modbusClient.close();
 
     }
 
@@ -121,6 +129,14 @@ public class TestFunc {
                 System.out.println(s + "=>" + byteBuf.toString(CharsetUtil.UTF_8));
             }
         });
+
+        final UpstreamFormat format = new UpstreamFormat();
+        format.put("teste", 1);
+        format.put("test2", "fasd");
+        mqttClient.publish("/hahaha", Unpooled.wrappedBuffer("imatestsstring".getBytes(CharsetUtil.UTF_8)));
+        mqttClient.publish("/hahaha", Unpooled.wrappedBuffer(format.getJsonBytes()));
+
+
         mqttClient.disconnect();
 
         while(true){
@@ -170,6 +186,7 @@ public class TestFunc {
     public static class TestJob implements Job {
         @Override
         public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
             JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
             int count = dataMap.getInt("count");
             System.out.println(new Date()+" count:"+count);
@@ -183,6 +200,7 @@ public class TestFunc {
         //测试DOM4J
         Document dom = Util.load("MtmModbusSlaveConfigs.xml");
         Element root = dom.getRootElement();
+
         final List<Element> elementList = root.element("ModbusDevices").elements("ModbusSlave");
         final Element modbusDevices = root.element("ModbusDevices");
 //        System.out.println(elementList.size());
@@ -208,12 +226,10 @@ public class TestFunc {
     @Test
     public void test8() throws Exception{
 
-        String str=null;
-        System.out.println(StringUtil.isNullOrEmpty(str));
-        str="null";
-        System.out.println(StringUtil.isNullOrEmpty(str));
-        str="   ";
-        System.out.println(StringUtil.isNullOrEmpty(str));
+        UpstreamFormat upstreamFormat = new UpstreamFormat();
+        upstreamFormat.put("number", 1);
+        upstreamFormat.put("name", "dasao");
+        System.out.println(upstreamFormat.getJsonStr());
 
 
     }

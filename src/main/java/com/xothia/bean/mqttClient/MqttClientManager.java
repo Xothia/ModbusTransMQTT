@@ -1,10 +1,13 @@
 package com.xothia.bean.mqttClient;
 
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
+import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import io.netty.handler.codec.mqtt.MqttVersion;
 import io.netty.util.concurrent.Future;
 import org.jetlinks.mqtt.client.*;
@@ -99,7 +102,7 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
 
     @Override
     public void afterPropertiesSet(){
-        //创建mqttclient 并建立同MQTT Broker的连接
+        //创建mqttclient
         mqttClient = MqttClient.create(conf2Config(conf), ((topic, payload) -> {
             Util.LOGGER.info("Default Handler: " + topic + "=>" + payload.toString(StandardCharsets.UTF_8));
         }));
@@ -148,11 +151,22 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
         return mqttClient.on(topic, handler);
     }
 
-    public void publish(String topic, Object data){
-        //等待上报模型建立。
-        //mqttClient.publish(topic, );
+    public void publish(String[] topics, UpstreamFormat data, Integer qos){
+        //未测试
+        ByteBuf dataBuf = data.getByteBuf();
+        MqttQoS q = MqttQoS.AT_MOST_ONCE;
+        switch (qos){
+            case 1:
+                q=MqttQoS.AT_LEAST_ONCE;
+                break;
+            case 2:
+                q=MqttQoS.EXACTLY_ONCE;
+                break;
+        }
 
-        return;
+        for(String topic:topics){
+            mqttClient.publish(topic, dataBuf, q);
+        }
     }
 
     @Override

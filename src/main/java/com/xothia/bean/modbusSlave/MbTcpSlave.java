@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -27,14 +28,12 @@ import javax.validation.constraints.PositiveOrZero;
 @Component
 @Scope("prototype")
 class MbTcpSlave implements MbSlave, InitializingBean {
-    @NotNull
-    private String hostAddress; //tcp slave ip 地址
-
-    @NotNull
-    private Integer hostPort; //tcp slave 端口号
 
     @PositiveOrZero
     private Integer slaveId; //slave 设备标识号，仅对通过Tcp网关接入的串行设备有意义
+
+    @NotNull @PositiveOrZero @Max(4)
+    private Integer function; //功能码
 
     @NotNull
     private MbSlaveUpstreamPatten[] upstreamPatten; //上报数据行为的描述
@@ -56,23 +55,13 @@ class MbTcpSlave implements MbSlave, InitializingBean {
     public MbTcpSlave() {
     }
 
-    public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager, MbMasterManager mbMasterManager) {
-        this.hostAddress = hostAddress;
-        this.hostPort = hostPort;
+    public MbTcpSlave(Integer slaveId, Integer function, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager, MbMasterManager mbMasterManager) {
         this.slaveId = slaveId;
+        this.function = function;
         this.upstreamPatten = upstreamPatten;
         this.downstreamPatten = downstreamPatten;
         this.mqttClientManager = mqttClientManager;
         this.mbMasterManager = mbMasterManager;
-    }
-
-    public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager) {
-        this.hostAddress = hostAddress;
-        this.hostPort = hostPort;
-        this.slaveId = slaveId;
-        this.upstreamPatten = upstreamPatten;
-        this.downstreamPatten = downstreamPatten;
-        this.mqttClientManager = mqttClientManager;
     }
 
     @Override
@@ -85,20 +74,9 @@ class MbTcpSlave implements MbSlave, InitializingBean {
         return upstreamPatten;
     }
 
-    public String getHostAddress() {
-        return hostAddress;
-    }
 
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
-    }
-
-    public Integer getHostPort() {
-        return hostPort;
-    }
-
-    public void setHostPort(Integer hostPort) {
-        this.hostPort = hostPort;
+    public Integer getFunction() {
+        return function;
     }
 
     public Integer getSlaveId() {
