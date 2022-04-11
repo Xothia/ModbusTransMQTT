@@ -8,6 +8,7 @@
             <HostPort>7777</HostPort>
             <SlaveId>0</SlaveId>
             <UpstreamPattens>
+                <!--  配置上报周期、上报topic、上报属性、数据来源  -->
                 <UpstreamPatten>
                     <CronExpr>this is CronExpr</CronExpr>
                     <IntervalInMilliseconds>111</IntervalInMilliseconds>
@@ -15,7 +16,28 @@
                         <Topic>i am topic 1.</Topic>
                         <Topic>i am topic 2.</Topic>
                     </Topics>
+                    <Attributes>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>temperature</AttrName>
+                            <!--  默认为0  -->
+                            <Address>0</Address>
+                            <!--  默认为1  -->
+                            <Quantity>1</Quantity>
+                        </Attribute>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>water level</AttrName>
+                            <!--  默认为0  -->
+                            <Address>1</Address>
+                            <!--  默认为1  -->
+                            <Quantity>2</Quantity>
+                        </Attribute>
+
+                    </Attributes>
+
                 </UpstreamPatten>
+
                 <UpstreamPatten>
                     <CronExpr>this is CronExpr2</CronExpr>
                     <IntervalInMilliseconds>222</IntervalInMilliseconds>
@@ -24,6 +46,16 @@
                         <Topic>i am topic 22.</Topic>
                     </Topics>
                 </UpstreamPatten>
+                <Attributes>
+                    <Attribute>
+                        <!--  必须  -->
+                        <AttrName>temperature</AttrName>
+                        <!--  默认为0  -->
+                        <Address>0</Address>
+                        <!--  默认为1  -->
+                        <Quantity>1</Quantity>
+                    </Attribute>
+                </Attributes>
             </UpstreamPattens>
 
             <DownstreamTopics>
@@ -60,6 +92,17 @@
                         <Topic>i am topic 1.</Topic>
                         <Topic>i am topic 2.</Topic>
                     </Topics>
+
+                    <Attributes>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>temperature</AttrName>
+                            <!--  默认为0  -->
+                            <Address>0</Address>
+                            <!--  默认为1  -->
+                            <Quantity>1</Quantity>
+                        </Attribute>
+                    </Attributes>
                 </UpstreamPatten>
             </UpstreamPattens>
 
