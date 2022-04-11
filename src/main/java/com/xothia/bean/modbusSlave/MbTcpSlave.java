@@ -1,5 +1,6 @@
 package com.xothia.bean.modbusSlave;
 
+import com.xothia.bean.modbusMaster.MbMasterManager;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.util.Util;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,12 +45,25 @@ class MbTcpSlave implements MbSlave, InitializingBean {
     @NotNull
     private MqttClientManager mqttClientManager; //对应MqttClient的代理类 未完工
 
+    @NotNull
+    private MbMasterManager mbMasterManager; //对应Modbus master的代理类 未完工
+
     @Override
     public void afterPropertiesSet(){
         Util.valid(this);
     }
 
     public MbTcpSlave() {
+    }
+
+    public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager, MbMasterManager mbMasterManager) {
+        this.hostAddress = hostAddress;
+        this.hostPort = hostPort;
+        this.slaveId = slaveId;
+        this.upstreamPatten = upstreamPatten;
+        this.downstreamPatten = downstreamPatten;
+        this.mqttClientManager = mqttClientManager;
+        this.mbMasterManager = mbMasterManager;
     }
 
     public MbTcpSlave(String hostAddress, Integer hostPort, Integer slaveId, MbSlaveUpstreamPatten[] upstreamPatten, MbSlaveDownstreamPatten downstreamPatten, MqttClientManager mqttClientManager) {
@@ -109,5 +123,9 @@ class MbTcpSlave implements MbSlave, InitializingBean {
 
     public void setDownstreamPatten(MbSlaveDownstreamPatten downstreamPatten) {
         this.downstreamPatten = downstreamPatten;
+    }
+
+    public MbMasterManager getMbMasterManager() {
+        return mbMasterManager;
     }
 }

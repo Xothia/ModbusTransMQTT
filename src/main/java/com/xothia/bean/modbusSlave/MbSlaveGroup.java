@@ -1,5 +1,6 @@
 package com.xothia.bean.modbusSlave;
 
+import com.xothia.bean.modbusMaster.MbMasterManager;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.util.Attribute;
 import com.xothia.util.Util;
@@ -83,10 +84,19 @@ public class MbSlaveGroup implements InitializingBean {
                     break;
             }
         }
-        //构建Manager
+        //构建Mqtt Manager
         map.put("MqttClientManager", mqttClientManagerBuilder(conf, ctx));
 
-        return ctx.getBean(MbTcpSlave.class, map.get("HostAddress"), map.get("HostPort"), map.get("SlaveId"), map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"));
+        //构建Modbus master manager
+        map.put("MbMasterManager", buildMbMasterManager(map, ctx));
+
+        return ctx.getBean(MbTcpSlave.class, map.get("HostAddress"), map.get("HostPort"), map.get("SlaveId"), map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
+    }
+
+    private MbMasterManager buildMbMasterManager(HashMap<String, Object> map, ApplicationContext ctx){
+        //待施工
+
+        return ctx.getBean(MbMasterManager.class);
     }
 
     private MbSlaveDownstreamPatten getDownTopics(Element downTopics, ApplicationContext ctx) {
@@ -117,8 +127,6 @@ public class MbSlaveGroup implements InitializingBean {
 
     //根据MqttConfig构建Manager
     private MqttClientManager mqttClientManagerBuilder(MqttConfig conf, ApplicationContext ctx){
-        //待施工
-
         return ctx.getBean(MqttClientManager.class, (Object)conf);
     }
 

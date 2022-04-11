@@ -1,6 +1,10 @@
 package com.xothia.util;
 
 import com.alibaba.fastjson.JSON;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
@@ -16,6 +20,8 @@ import java.util.HashMap;
  * @Email : huaxia889900@126.com
  * @Description : 属性上报的格式。
  */
+@Component("upstreamFormat")
+@Scope("prototype")
 public class UpstreamFormat {
 
     private final HashMap<String, Object> data = new HashMap<>();
@@ -32,4 +38,7 @@ public class UpstreamFormat {
         return JSON.toJSONBytes(data);
     }
 
+    public ByteBuf getByteBuf(){
+        return Unpooled.wrappedBuffer(this.getJsonBytes());
+    }
 }
