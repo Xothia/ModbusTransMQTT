@@ -1,5 +1,7 @@
 package com.xothia.bean.mqttClient;
 
+import com.xothia.bean.modbusMaster.MbMaster;
+import com.xothia.util.UpstreamFormat;
 import io.netty.util.concurrent.Future;
 import org.jetlinks.mqtt.client.MqttHandler;
 
@@ -26,6 +28,9 @@ public interface MqttClient {
     Future<Void> subscribe(String topic, MqttHandler handler);
 
     //向一个topic publish数据
+    void publish(String[] topics, UpstreamFormat data, Integer qos);
 
+    //设置modbus master***
+    void setMbMaster(MbMaster mbMaster);
 
 }

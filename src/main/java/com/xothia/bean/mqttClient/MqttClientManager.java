@@ -1,5 +1,6 @@
 package com.xothia.bean.mqttClient;
 
+import com.xothia.bean.modbusMaster.MbMaster;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
@@ -71,6 +72,9 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
 
     @NotNull
     private MbSlaveGroup.MqttConfig conf;
+
+    //持有相关Modbus Master的引用
+    private MbMaster mbMaster;
 
 
     static{
@@ -181,5 +185,9 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
 
     public MqttClient getMqttClient() {
         return mqttClient;
+    }
+
+    public void setMbMaster(MbMaster mbMaster) {
+        this.mbMaster = mbMaster;
     }
 }

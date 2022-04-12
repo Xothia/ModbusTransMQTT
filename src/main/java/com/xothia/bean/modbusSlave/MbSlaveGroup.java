@@ -1,6 +1,8 @@
 package com.xothia.bean.modbusSlave;
 
+import com.xothia.bean.modbusMaster.MbMaster;
 import com.xothia.bean.modbusMaster.MbMasterManager;
+import com.xothia.bean.mqttClient.MqttClient;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.util.Attribute;
 import com.xothia.util.Util;
@@ -86,10 +88,13 @@ public class MbSlaveGroup implements InitializingBean {
             }
         }
         //构建Mqtt Manager
-        map.put("MqttClientManager", mqttClientManagerBuilder(conf, ctx));
+        final MqttClient mqttClientManager = mqttClientManagerBuilder(conf, ctx);
+        map.put("MqttClientManager", mqttClientManager);
 
         //构建Modbus master manager
-        map.put("MbMasterManager", buildMbMasterManager(map, ctx));
+        final MbMaster mbMasterManager = buildMbMasterManager(map, ctx);
+        mqttClientManager.setMbMaster(mbMasterManager);
+        map.put("MbMasterManager", mbMasterManager);
 
         return ctx.getBean(MbTcpSlave.class, map.getOrDefault("SlaveId", 0), map.getOrDefault("Function", 0),map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
     }
