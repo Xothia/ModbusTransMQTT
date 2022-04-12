@@ -1,5 +1,4 @@
 import com.xothia.MqttProxy;
-import com.xothia.bean.Conf;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.springConfig.SpringConfig;
@@ -92,16 +91,16 @@ public class TestFunc {
         //MQTT Client测试
 
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
-        Conf config = context.getBean("conf", Conf.class);
+        //Conf config = context.getBean("conf", Conf.class);
 
         EventLoopGroup loop = new NioEventLoopGroup(); //!!!
         MqttClient mqttClient = MqttClient.create(new MqttClientConfig(),((topic, payload) -> {
             System.out.println(topic + "=>" + payload.toString(StandardCharsets.UTF_8));
         }));
         mqttClient.setEventLoop(loop);
-        mqttClient.getClientConfig().setClientId(config.clientId);
-        mqttClient.getClientConfig().setUsername(config.usesrname);
-        mqttClient.getClientConfig().setPassword(config.passwd);
+//        mqttClient.getClientConfig().setClientId(config.clientId);
+//        mqttClient.getClientConfig().setUsername(config.usesrname);
+//        mqttClient.getClientConfig().setPassword(config.passwd);
         mqttClient.getClientConfig().setProtocolVersion(MqttVersion.MQTT_3_1_1);
         mqttClient.getClientConfig().setReconnect(true);
         mqttClient.setCallback(new MqttClientCallback() {
@@ -115,7 +114,7 @@ public class TestFunc {
 
             }
         });
-        MqttConnectResult result = mqttClient.connect(config.mqttHostUrl, config.port).await().get();
+        MqttConnectResult result = mqttClient.connect("127.0.0.1", 1883).await().get();
         if (result.getReturnCode() != MqttConnectReturnCode.CONNECTION_ACCEPTED) {
             System.out.println("error:" + result.getReturnCode());
             mqttClient.disconnect();
