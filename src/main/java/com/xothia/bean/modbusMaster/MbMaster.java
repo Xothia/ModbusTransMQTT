@@ -1,6 +1,8 @@
 package com.xothia.bean.modbusMaster;
 
 import de.gandev.modjn.entity.exception.ConnectionException;
+import de.gandev.modjn.entity.exception.ErrorResponseException;
+import de.gandev.modjn.entity.exception.NoResponseException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,5 +19,6 @@ import de.gandev.modjn.entity.exception.ConnectionException;
 public interface MbMaster {
     void doConnect() throws ConnectionException;
     void requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException;
+    Object requestSync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException, ErrorResponseException, NoResponseException;
 
 }

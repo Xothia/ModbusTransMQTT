@@ -5,6 +5,8 @@ import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
 import de.gandev.modjn.entity.ModbusFrame;
 import de.gandev.modjn.entity.exception.ConnectionException;
+import de.gandev.modjn.entity.exception.ErrorResponseException;
+import de.gandev.modjn.entity.exception.NoResponseException;
 import de.gandev.modjn.handler.ModbusResponseHandler;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
@@ -67,6 +69,24 @@ public class MbMasterManager implements MbMaster, InitializingBean {
                 System.out.println(modbusFrame.toString());
             }
         });
+    }
+
+    @Override
+    public Object requestSync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException, ErrorResponseException, NoResponseException {
+        switch (functionCode){
+            case 1:
+                return modbusClient.readCoils(address, quantity);
+
+            case 2:
+                return modbusClient.readDiscreteInputs(address, quantity);
+
+            case 3:
+                return modbusClient.readHoldingRegisters(address, quantity);
+
+            case 4:
+                return modbusClient.readInputRegisters(address, quantity);
+        }
+        return null;
     }
 
     public void requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException {
