@@ -68,6 +68,7 @@ public class ModbusProxy implements InitializingBean {
                 jobDetail = JobBuilder.newJob(UpstreamJob.class).build();
                 jobDetail.getJobDataMap().put("mbMaster", sla.getMbMasterManager());
                 jobDetail.getJobDataMap().put("patten", p);
+                jobDetail.getJobDataMap().put("function", sla.getFunction());
 
                 //构建trigger
                 if(!Util.isNullOrBlank(p.getCronExpr())){

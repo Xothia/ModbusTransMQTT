@@ -20,5 +20,7 @@ public interface MbSlave {
 
     MbMasterManager getMbMasterManager();
 
+    Integer getFunction();
+
     MbSlaveUpstreamPatten[] getUpstreamPatten();
 }
