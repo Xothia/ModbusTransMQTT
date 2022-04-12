@@ -6,10 +6,8 @@
         <ModbusSlave>
             <!--  默认127.0.0.1  -->
             <HostAddress>127.0.0.1</HostAddress>
-
             <!--  默认502  -->
             <HostPort>7777</HostPort>
-
             <!--  默认0  -->
             <SlaveId>0</SlaveId>
 
@@ -23,21 +21,21 @@
                 <!--  配置上报周期、上报topic、上报属性、数据来源  -->
                 <UpstreamPatten>
                     <!--  默认为0  -->
-<!--                    <Qos>0</Qos>-->
-                    <CronExpr>this is CronExpr</CronExpr>
-                    <IntervalInMilliseconds>111</IntervalInMilliseconds>
+                    <Qos>0</Qos>
+<!--                    <CronExpr>this is CronExpr</CronExpr>-->
+                    <IntervalInMilliseconds>2000</IntervalInMilliseconds>
                     <Topics>
-                        <Topic>i am topic 1.</Topic>
-                        <Topic>i am topic 2.</Topic>
+                        <Topic>/testUpstream/dataReceive/0</Topic>
+                        <Topic>/testUpstream/dataReceive/1</Topic>
                     </Topics>
                     <Attributes>
                         <Attribute>
                             <!--  必须  -->
                             <AttrName>temperature</AttrName>
                             <!--  默认为0  -->
-<!--                            <Address>0</Address>-->
+                            <Address>0</Address>
                             <!--  默认为1  -->
-<!--                            <Quantity>1</Quantity>-->
+                            <Quantity>1</Quantity>
                         </Attribute>
                         <Attribute>
                             <!--  必须  -->
@@ -55,18 +53,18 @@
                 <UpstreamPatten>
                     <!--  默认为0  -->
                     <Qos>0</Qos>
-                    <CronExpr>this is CronExpr2</CronExpr>
-                    <IntervalInMilliseconds>222</IntervalInMilliseconds>
+                    <CronExpr>*/5 * * * * ?</CronExpr>
+                    <IntervalInMilliseconds>2000</IntervalInMilliseconds>
                     <Topics>
-                        <Topic>i am topic 21.</Topic>
-                        <Topic>i am topic 22.</Topic>
+                        <Topic>/testUpstream/dataReceive/3</Topic>
+                        <Topic>/testUpstream/dataReceive/4</Topic>
                     </Topics>
                     <Attributes>
                         <Attribute>
                             <!--  必须  -->
-                            <AttrName>temperature</AttrName>
+                            <AttrName>relative humidity</AttrName>
                             <!--  默认为0  -->
-                            <Address>0</Address>
+                            <Address>3</Address>
                             <!--  默认为1  -->
                             <Quantity>1</Quantity>
                         </Attribute>
@@ -77,21 +75,21 @@
             </UpstreamPattens>
 
             <DownstreamTopics>
-                <Topic>i am down topic 21.</Topic>
-                <Topic>i am down topic 22.</Topic>
+                <Topic>/testDownstream/dataReceive/0</Topic>
+                <Topic>/testDownstream/dataReceive/1</Topic>
             </DownstreamTopics>
 
             <!--  可选项：没有则用Mtm中默认broker  -->
             <TargetMqttBroker>
-                <BrokerAddress>iot-06z00d3qre8b6ub.mqtt.iothub.aliyuncs.com</BrokerAddress>
+                <BrokerAddress>127.0.0.1</BrokerAddress>
                 <BrokerPort>1883</BrokerPort>
             </TargetMqttBroker>
 
             <!--  可选项：没有则用Mtm中默认client  -->
             <ProxyMqttClient>
-                <ClientId></ClientId>
-                <Username></Username>
-                <Password></Password>
+                <ClientId>TestClient0</ClientId>
+                <Username>TestClient0</Username>
+                <Password>TestClient0</Password>
             </ProxyMqttClient>
 
         </ModbusSlave>
@@ -100,18 +98,18 @@
             <HostAddress>127.0.0.1</HostAddress>
             <HostPort>7778</HostPort>
             <SlaveId>1</SlaveId>
-            <Function>3</Function>
+            <Function>1</Function>
             <UpstreamPattens>
                 <UpstreamPatten>
                     <!--  默认为0  -->
                     <Qos>0</Qos>
-                    <CronExpr>this is CronExpr</CronExpr>
-                    <IntervalInMilliseconds>123</IntervalInMilliseconds>
+<!--                <CronExpr>this is CronExpr</CronExpr>-->
+                    <IntervalInMilliseconds>4000</IntervalInMilliseconds>
 
                     <!--可以为空但必须有 之后会改-->
                     <Topics>
-                        <Topic>i am topic 1.</Topic>
-                        <Topic>i am topic 2.</Topic>
+                        <Topic>/testUpstream/dataReceive/20</Topic>
+                        <Topic>/testUpstream/dataReceive/21</Topic>
                     </Topics>
 
                     <Attributes>
@@ -129,17 +127,18 @@
 
             <!--可以为空但必须有 之后会改-->
             <DownstreamTopics>
+                <Topic>/testDownstream/dataReceive/20</Topic>
             </DownstreamTopics>
 
             <TargetMqttBroker>
-                <BrokerAddress>ima defaultBrokerAddress</BrokerAddress>
-                <BrokerPort>6788</BrokerPort>
+                <BrokerAddress>127.0.0.1</BrokerAddress>
+                <BrokerPort>1883</BrokerPort>
             </TargetMqttBroker>
 
             <ProxyMqttClient>
-                <ClientId>imadefaultclientid</ClientId>
-                <Username>imadefaultUsername</Username>
-                <Password>imadefaultPassword</Password>
+                <ClientId>TestClient1</ClientId>
+                <Username>TestClient1</Username>
+                <Password>TestClient1</Password>
             </ProxyMqttClient>
 
         </ModbusSlave>
