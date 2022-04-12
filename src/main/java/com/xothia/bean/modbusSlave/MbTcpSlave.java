@@ -39,7 +39,7 @@ class MbTcpSlave implements MbSlave, InitializingBean {
     private MbSlaveUpstreamPatten[] upstreamPatten; //上报数据行为的描述
 
     @NotNull
-    private MbSlaveDownstreamPatten downstreamPatten; //上报数据行为的描述
+    private MbSlaveDownstreamPatten downstreamPatten; //下行指令行为的描述
 
     @NotNull
     private MqttClientManager mqttClientManager; //对应MqttClient的代理类 未完工

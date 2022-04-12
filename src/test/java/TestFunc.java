@@ -1,3 +1,4 @@
+import com.xothia.ModbusProxy;
 import com.xothia.MqttProxy;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.bean.mqttClient.MqttClientManager;
@@ -169,7 +170,8 @@ public class TestFunc {
                 .build();
         Trigger build = TriggerBuilder
                 .newTrigger()
-                .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(5))
+                //.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(5))
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(2000).repeatForever())
                 .startNow()
                 .withIdentity("testTrigger", "group1")
                 .build();
@@ -230,6 +232,15 @@ public class TestFunc {
         upstreamFormat.put("name", "dasao");
         System.out.println(upstreamFormat.getJsonStr());
 
+
+    }
+
+    @Test
+    public void test9() throws Exception{
+        //模拟modbus 代理服务
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
+        modbusProxy.run();
 
     }
 

@@ -1,5 +1,6 @@
 package com.xothia.bean.modbusSlave;
 
+import com.xothia.bean.modbusMaster.MbMasterManager;
 import com.xothia.bean.mqttClient.MqttClientManager;
 
 /**
@@ -16,6 +17,8 @@ import com.xothia.bean.mqttClient.MqttClientManager;
  */
 public interface MbSlave {
     MqttClientManager getMqttClientManager();
+
+    MbMasterManager getMbMasterManager();
 
     MbSlaveUpstreamPatten[] getUpstreamPatten();
 }

@@ -25,7 +25,7 @@ import java.util.Arrays;
  * @Email : huaxia889900@126.com
  * @Description : 用于描述一个Modbus Slave/Server 上传其数据的模式（如每隔2秒向某个/几个topic 上传数据）
  * 可以选择cron表达式或者以毫秒为间隔的触发形式（二选一）
- *
+ * cron表达式优先级大于毫秒间隔
  */
 @Valid
 @Component("mbUpsPatten")
