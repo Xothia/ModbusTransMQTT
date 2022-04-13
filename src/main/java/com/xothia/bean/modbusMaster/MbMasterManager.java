@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,6 +46,10 @@ public class MbMasterManager implements MbMaster, InitializingBean {
 
     @NotNull
     private ModbusClient modbusClient;
+
+    //transaction id to attribute name.
+    @NotNull
+    private final HashMap<Integer, String> attrMap = new HashMap<>();
 
     public MbMasterManager() {
     }
@@ -108,6 +113,10 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         }
         throw new RuntimeException("function code do not exist "+functionCode);
         //return -1;
+    }
+
+    public void putAttrMap(int transactionId, String attrName){
+        this.attrMap.put(transactionId, attrName);
     }
 
 }

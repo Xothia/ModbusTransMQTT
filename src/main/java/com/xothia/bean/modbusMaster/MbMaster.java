@@ -22,4 +22,6 @@ public interface MbMaster {
     int requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException;
     Object requestSync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException, ErrorResponseException, NoResponseException;
 
+    //用于放id-name键值对
+    void putAttrMap(int transactionId, String attrName);
 }
