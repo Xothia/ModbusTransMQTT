@@ -18,7 +18,8 @@ import de.gandev.modjn.entity.exception.NoResponseException;
  */
 public interface MbMaster {
     void doConnect() throws ConnectionException;
-    void requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException;
+    //返回 transactionId
+    int requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException;
     Object requestSync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException, ErrorResponseException, NoResponseException;
 
 }

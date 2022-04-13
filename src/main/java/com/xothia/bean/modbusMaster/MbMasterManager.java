@@ -66,6 +66,8 @@ public class MbMasterManager implements MbMaster, InitializingBean {
             @Override
             public void newResponse(ModbusFrame modbusFrame) {
                 //这里应当调用mqtt client发送数据到topics。待施工...
+                //Q: 如何在这里得到对应的AttrName?
+                //A: 指定TransactionId, 将TID-attrName键值对放到这个类的map里。需要修改callModbusFunction方法。
                 System.out.println(modbusFrame.toString());
             }
         });
@@ -89,26 +91,23 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         return null;
     }
 
-    public void requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException {
+    public int requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException {
         switch (functionCode){
             case 1:
-                modbusClient.readCoilsAsync(address, quantity);
-                break;
+                return modbusClient.readCoilsAsync(address, quantity);
 
             case 2:
-                modbusClient.readDiscreteInputsAsync(address, quantity);
-                break;
+                return modbusClient.readDiscreteInputsAsync(address, quantity);
 
             case 3:
-                modbusClient.readHoldingRegistersAsync(address, quantity);
-                break;
+                return modbusClient.readHoldingRegistersAsync(address, quantity);
 
             case 4:
-                modbusClient.readInputRegistersAsync(address, quantity);
-                break;
+                return modbusClient.readInputRegistersAsync(address, quantity);
 
         }
-
+        throw new RuntimeException("function code do not exist "+functionCode);
+        //return -1;
     }
 
 }
