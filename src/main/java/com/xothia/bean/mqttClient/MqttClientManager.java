@@ -2,6 +2,7 @@ package com.xothia.bean.mqttClient;
 
 import com.xothia.bean.modbusMaster.MbMaster;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
+import com.xothia.util.DownstreamFormat;
 import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import io.netty.buffer.ByteBuf;
@@ -10,9 +11,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.netty.handler.codec.mqtt.MqttVersion;
-import io.netty.util.concurrent.Future;
-import org.jetlinks.mqtt.client.*;
 import org.jetlinks.mqtt.client.MqttClient;
+import org.jetlinks.mqtt.client.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -90,7 +90,6 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
     }
 
     //从conf获取参数，若无则读取默认参数。
-
     private MqttClientConfig conf2Config(MbSlaveGroup.MqttConfig myConf){
         final MqttClientConfig config = new MqttClientConfig();
 
@@ -102,7 +101,6 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
         config.setReconnect(true);
         return config;
     }
-
 
     @Override
     public void afterPropertiesSet(){
@@ -149,10 +147,23 @@ public class MqttClientManager implements InitializingBean, com.xothia.bean.mqtt
     }
 
     @Override
-    public Future<Void> subscribe(String topic, MqttHandler handler){
+    public void subscribe(String[] topics){
         //等待添加指令报文解析。 handler应被extend并完善解析下达指令功能。
+        for(String controlTopic:topics){
+            mqttClient.on(controlTopic, new MqttHandler() {
+                @Override
+                public void onMessage(String s, ByteBuf byteBuf) {
+                    final DownstreamFormat format = DownstreamFormat.byteBuf2instance(byteBuf);
+                    try {
+                        mbMaster.writeAsync(format);
+                        //Util.LOGGER.info(JSON.toJSONString(format));
 
-        return mqttClient.on(topic, handler);
+                    } catch (Exception e) {
+                        Util.LOGGER.warn("MqttClientManager: write failed:"+e.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     public void publish(String[] topics, UpstreamFormat data, Integer qos){

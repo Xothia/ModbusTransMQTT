@@ -1,12 +1,15 @@
+import com.alibaba.fastjson.JSON;
 import com.xothia.ModbusProxy;
 import com.xothia.MqttProxy;
 import com.xothia.bean.modbusSlave.MbSlaveGroup;
 import com.xothia.bean.mqttClient.MqttClientManager;
 import com.xothia.springConfig.SpringConfig;
+import com.xothia.util.DownstreamFormat;
 import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
 import de.gandev.modjn.entity.ModbusFrame;
+import de.gandev.modjn.entity.func.ModbusError;
 import de.gandev.modjn.entity.func.response.ReadCoilsResponse;
 import de.gandev.modjn.example.Example;
 import de.gandev.modjn.handler.ModbusResponseHandler;
@@ -73,15 +76,40 @@ public class TestFunc {
         modbusClient.setup(new ModbusResponseHandler() {
             @Override
             public void newResponse(ModbusFrame modbusFrame) {
-                final BitSet bitSet = ((ReadCoilsResponse) modbusFrame.getFunction()).getCoilStatus();
-                final UpstreamFormat format = new UpstreamFormat();
-                format.put("tat", Util.bitset2bool(bitSet));
-                System.out.println(format.getJsonStr());
+                if(modbusFrame.getFunction() instanceof ModbusError){
+                    System.out.println(modbusFrame.getFunction());
+                    return;
+                }
+//                final BitSet bitSet = ((ReadCoilsResponse) modbusFrame.getFunction()).getCoilStatus();
+//                final UpstreamFormat format = new UpstreamFormat();
+//                format.put("tat", Util.bitset2bool(bitSet));
+//                System.out.println(format.getJsonStr());
             }
         });
+        final Boolean[] booleans = new Boolean[3];
+        booleans[0]=false;
+        booleans[1]=false;
+        booleans[2]=false;
+        BitSet bSet = new BitSet(3);
+        for (int i=0;i<3;i++){
+            bSet.set(i, true);
+        }
+        bSet.flip(0);
+        bSet.flip(1);
+        bSet.flip(2);
 
-        modbusClient.readCoilsAsync(0,3);
+        final BitSet set = Util.bool2bitset(booleans);
+        set.set(0, 2, false);
+        System.out.println(bSet.isEmpty());
+
+        modbusClient.writeMultipleCoilsAsync(5, 3, bSet);
+
+        //modbusClient.readCoilsAsync(0,3);
 //        modbusClient.readHoldingRegistersAsync(0, 1);
+//        modbusClient.writeSingleCoil();
+//        modbusClient.writeSingleRegisterAsync();
+//        modbusClient.writeMultipleCoilsAsync();
+//        modbusClient.writeMultipleRegistersAsync();
 
 
         //ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
@@ -256,13 +284,60 @@ public class TestFunc {
     }
     @Test
     public void test10() throws Exception{
-        //模拟modbus 代理服务
-        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
-        final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
-        modbusProxy.run();
-        while(true){
+        //测试DownstreamFormat
+        ModbusClient modbusClient = new ModbusClient("127.0.0.1", 7778);
+        modbusClient.setup();
+        final ReadCoilsResponse response = modbusClient.readCoils(0, 3);
+        final BitSet bitSet = response.getCoilStatus();
+        final Boolean[] booleans = Util.bitset2bool(bitSet);
 
-        }
+        final DownstreamFormat format = new DownstreamFormat();
+        format.setAddress(1);
+        format.setReg(2);
+        format.setType(DownstreamFormat.WriteType.WRITE_MULTI_COIL);
+        format.setStates(booleans);
+
+
+        System.out.println(JSON.toJSONString(format));
+
+
+        String text = "{\"address\":1,\"quantity\":1,\"reg\":2,\"states\":[false,true,true],\"type\":\"WRITE_MULTI_COIL\"}";
+//        System.out.println(text);
+        final DownstreamFormat t = JSON.parseObject(text, DownstreamFormat.class);
+        System.out.println(JSON.toJSONString(t));
+//
+////        //Modbus Master测试
+//
+//        System.out.println(JSON.toJSONString(booleans));
+
+//        modbusClient.setup(new ModbusResponseHandler() {
+//            @Override
+//            public void newResponse(ModbusFrame modbusFrame) {
+//                final BitSet bitSet = ((ReadCoilsResponse) modbusFrame.getFunction()).getCoilStatus();
+//                final UpstreamFormat format = new UpstreamFormat();
+//                format.put("tat", Util.bitset2bool(bitSet));
+//                System.out.println(format.getJsonStr());
+//            }
+//        });
+//
+//        modbusClient.readCoilsAsync(0,3);
+////        modbusClient.readHoldingRegistersAsync(0, 1);
+////        modbusClient.writeSingleCoil();
+////        modbusClient.writeSingleRegisterAsync();
+////        modbusClient.writeMultipleCoilsAsync();
+////        modbusClient.writeMultipleRegistersAsync();
+//
+//
+//        //ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
+//        //System.out.println(response);
+//
+//
+//        while(true){
+//
+//        }
+//        //modbusClient.close();
+
+
 
     }
 

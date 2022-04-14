@@ -23,4 +23,6 @@ public interface MbSlave {
     Integer getFunction();
 
     MbSlaveUpstreamPatten[] getUpstreamPatten();
+
+    MbSlaveDownstreamPatten getDownstreamPatten();
 }

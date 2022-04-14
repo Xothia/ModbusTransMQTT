@@ -2,6 +2,7 @@ package com.xothia.bean.modbusMaster;
 
 import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
 import com.xothia.bean.mqttClient.MqttClient;
+import com.xothia.util.DownstreamFormat;
 import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
@@ -10,6 +11,7 @@ import de.gandev.modjn.entity.ModbusFunction;
 import de.gandev.modjn.entity.exception.ConnectionException;
 import de.gandev.modjn.entity.exception.ErrorResponseException;
 import de.gandev.modjn.entity.exception.NoResponseException;
+import de.gandev.modjn.entity.func.ModbusError;
 import de.gandev.modjn.entity.func.response.ReadCoilsResponse;
 import de.gandev.modjn.entity.func.response.ReadDiscreteInputsResponse;
 import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
@@ -82,38 +84,49 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         modbusClient.setup(new ModbusResponseHandler() {
             @Override
             public void newResponse(ModbusFrame modbusFrame) {
-                //这里应当调用mqtt client发送数据到topics。待施工...
+                //这里应当调用mqtt client发送数据到topics。
                 //Q: 如何在这里得到对应的AttrName?
                 //A: 指定TransactionId, 将TID-attrName键值对放到这个类的map里。需要修改callModbusFunction方法。
+                //Q: 无法写多个COILS时全为false
                 final UpstreamFormat format = new UpstreamFormat();
                 final int tranId = modbusFrame.getHeader().getTransactionIdentifier();
-                try {
-                    final String attrName = getAttrName(tranId);
-                    final MbSlaveUpstreamPatten patten = getUps(tranId);
-                    final ModbusFunction function = modbusFrame.getFunction();
-                    if(function instanceof ReadHoldingRegistersResponse){
-                        format.put(attrName, ((ReadHoldingRegistersResponse) function).getRegisters());
-                    }
-                    else if(function instanceof ReadCoilsResponse){
-                        format.put(attrName, Util.bitset2bool(((ReadCoilsResponse) function).getCoilStatus()));
-                    }
-                    else if(function instanceof ReadInputRegistersResponse){
-                        format.put(attrName, ((ReadInputRegistersResponse) function).getInputRegisters());
+                final ModbusFunction function = modbusFrame.getFunction();
 
-                    }
-                    else if(function instanceof ReadDiscreteInputsResponse){
-                        format.put(attrName, Util.bitset2bool(((ReadDiscreteInputsResponse) function).getInputStatus()));
-                    }
+                if(isReadResponse(function)){
+                    try {
+                        final String attrName = getAttrName(tranId);
+                        final MbSlaveUpstreamPatten patten = getUps(tranId);
+                        if(function instanceof ReadHoldingRegistersResponse){
+                            format.put(attrName, ((ReadHoldingRegistersResponse) function).getRegisters());
+                        }
+                        else if(function instanceof ReadCoilsResponse){
+                            format.put(attrName, Util.bitset2bool(((ReadCoilsResponse) function).getCoilStatus()));
+                        }
+                        else if(function instanceof ReadInputRegistersResponse){
+                            format.put(attrName, ((ReadInputRegistersResponse) function).getInputRegisters());
 
-                    /////////////调用Mqtt Client发数据//////////////
-                    mqttClient.publish(patten.getTopics(), format, patten.getQos());
+                        }
+                        else if(function instanceof ReadDiscreteInputsResponse){
+                            format.put(attrName, Util.bitset2bool(((ReadDiscreteInputsResponse) function).getInputStatus()));
+                        }
+                        /////////////调用Mqtt Client发数据//////////////
+                        mqttClient.publish(patten.getTopics(), format, patten.getQos());
 
-                } catch (Exception e) {
-                    Util.LOGGER.error(e.getMessage());
+                    } catch (Exception e) {
+                        Util.LOGGER.error("ModbusResponseHandler: "+e.getMessage());
+                    }
                 }
+                else if(function instanceof ModbusError){
+                    Util.LOGGER.error("ModbusResponseHandler: "+((ModbusError) function).getExceptionMessage());
+                }
+
                 //Util.LOGGER.info(format.getJsonStr());
             }
         });
+    }
+
+    private boolean isReadResponse(ModbusFunction f){
+        return f instanceof ReadHoldingRegistersResponse || f instanceof ReadCoilsResponse || f instanceof ReadInputRegistersResponse || f instanceof ReadDiscreteInputsResponse;
     }
 
     @Override
@@ -133,6 +146,25 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         }
         return null;
     }
+
+    public void writeAsync(DownstreamFormat format) throws ConnectionException, ErrorResponseException, NoResponseException {
+
+        switch (format.getType()){
+            case WRITE_SINGLE_REG:
+                modbusClient.writeSingleRegisterAsync(format.getAddress(), format.getReg());
+                break;
+            case WRITE_SINGLE_COIL:
+                modbusClient.writeSingleCoil(format.getAddress(), format.getState());
+                break;
+            case WRITE_MULTI_COIL:
+                modbusClient.writeMultipleCoilsAsync(format.getAddress(), format.getQuantity(), Util.bool2bitset(format.getStates()));
+                break;
+            case WRITE_MULTI_REG:
+                modbusClient.writeMultipleRegistersAsync(format.getAddress(), format.getQuantity(), format.getRegs());
+                break;
+        }
+    }
+
 
     public int requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException {
         switch (functionCode){

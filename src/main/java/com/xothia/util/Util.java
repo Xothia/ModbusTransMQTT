@@ -60,4 +60,11 @@ public class Util {
         return booleans;
     }
 
+    public static BitSet bool2bitset(Boolean[] booleans){
+        BitSet bSet = new BitSet(booleans.length);
+        for (int i=0;i<booleans.length;i++){
+            bSet.set(i, booleans[i]);
+        }
+        return bSet;
+    }
 }

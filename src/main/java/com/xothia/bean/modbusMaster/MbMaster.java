@@ -1,6 +1,7 @@
 package com.xothia.bean.modbusMaster;
 
 import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
+import com.xothia.util.DownstreamFormat;
 import de.gandev.modjn.entity.exception.ConnectionException;
 import de.gandev.modjn.entity.exception.ErrorResponseException;
 import de.gandev.modjn.entity.exception.NoResponseException;
@@ -22,6 +23,9 @@ public interface MbMaster {
     //返回 transactionId
     int requestAsync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException;
     Object requestSync(Integer functionCode, Integer address, Integer quantity) throws ConnectionException, ErrorResponseException, NoResponseException;
+
+    //异步写
+    void writeAsync(DownstreamFormat format) throws ConnectionException, ErrorResponseException, NoResponseException;
 
     //用于放id-name键值对
     void putAttrMap(int transactionId, String attrName);

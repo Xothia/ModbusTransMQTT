@@ -91,11 +91,12 @@ public class ModbusProxy implements InitializingBean {
             }
         }
 
-        //再建立连接
+        //再建立连接并设置mqtt client监听control topic
         for (MbSlave sla : slaveGroup) {
             try {
                 sla.getMbMasterManager().doConnect();
                 sla.getMqttClientManager().doConnect();
+                sla.getMqttClientManager().subscribe(sla.getDownstreamPatten().getTopics());
             }catch (Exception e){
                 LOGGER.fatal("客户端连接异常。"+e.getMessage());
                 throw new RuntimeException("客户端连接异常。");
