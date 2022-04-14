@@ -119,7 +119,7 @@
                             <!--  默认为0  -->
                             <Address>0</Address>
                             <!--  默认为1  -->
-                            <Quantity>1</Quantity>
+                            <Quantity>2</Quantity>
                         </Attribute>
                     </Attributes>
                 </UpstreamPatten>

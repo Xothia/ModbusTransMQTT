@@ -17,14 +17,15 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @Description :
  */
 public class ServerLauncher {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         //ApplicationContext context = new ClassPathXmlApplicationContext("SpringConfig.xml");
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         //Modbus设备代理服务
-        //待补充
+        final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
+        //modbusProxy.run();
 
         //Mqtt设备代理服务
-        MqttProxy server = context.getBean("mqttProxy", MqttProxy.class);
+        final MqttProxy server = context.getBean("mqttProxy", MqttProxy.class);
         server.run();
     }
 }

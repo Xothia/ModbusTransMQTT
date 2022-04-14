@@ -1,6 +1,13 @@
 package com.xothia;
 
+import com.xothia.bean.modbusMaster.MbMaster;
+import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
+import com.xothia.util.Attribute;
+import com.xothia.util.UpstreamFormat;
+import com.xothia.util.Util;
+import de.gandev.modjn.entity.exception.ConnectionException;
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -20,6 +27,25 @@ public class UpstreamJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         //待施工
+        final JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
+        final MbMaster mbMaster = (MbMaster) jobDataMap.get("mbMaster");
+        final MbSlaveUpstreamPatten patten = (MbSlaveUpstreamPatten) jobDataMap.get("patten");
+        final Integer funCode = (Integer) jobDataMap.get("function");
 
+
+        final Attribute[] attributes = patten.getAttributes();
+        final UpstreamFormat format = new UpstreamFormat();
+
+        int transactionId;
+        for (Attribute attr:attributes) {
+            try {
+                transactionId = mbMaster.requestAsync(funCode, attr.getAddress(), attr.getQuantity());
+                mbMaster.putAttrMap(transactionId, attr.getAttrName());
+
+            } catch (ConnectionException e) {
+                Util.LOGGER.fatal("UpstreamJob: "+e.getMessage());
+                throw new RuntimeException("UpstreamJob: "+e.getMessage());
+            }
+        }
     }
 }

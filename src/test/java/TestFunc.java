@@ -7,6 +7,7 @@ import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
 import de.gandev.modjn.entity.ModbusFrame;
+import de.gandev.modjn.entity.func.response.ReadCoilsResponse;
 import de.gandev.modjn.example.Example;
 import de.gandev.modjn.handler.ModbusResponseHandler;
 import io.netty.buffer.ByteBuf;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -66,16 +68,22 @@ public class TestFunc {
     @Test
     public void test3() throws Exception{
         //Modbus Master测试
-        ModbusClient modbusClient = new ModbusClient("127.0.0.1", 7770);
+        ModbusClient modbusClient = new ModbusClient("127.0.0.1", 7778);
         //modbusClient.setup();
         modbusClient.setup(new ModbusResponseHandler() {
             @Override
             public void newResponse(ModbusFrame modbusFrame) {
-                System.out.println(modbusFrame.toString());
+                final BitSet bitSet = ((ReadCoilsResponse) modbusFrame.getFunction()).getCoilStatus();
+                final UpstreamFormat format = new UpstreamFormat();
+                format.put("tat", Util.bitset2bool(bitSet));
+                System.out.println(format.getJsonStr());
             }
         });
 
-        modbusClient.readHoldingRegistersAsync(0, 1);
+        modbusClient.readCoilsAsync(0,3);
+//        modbusClient.readHoldingRegistersAsync(0, 1);
+
+
         //ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
         //System.out.println(response);
 
@@ -241,8 +249,21 @@ public class TestFunc {
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
         modbusProxy.run();
+        while(true){
+
+        }
 
     }
+    @Test
+    public void test10() throws Exception{
+        //模拟modbus 代理服务
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
+        modbusProxy.run();
+        while(true){
 
+        }
+
+    }
 
 }

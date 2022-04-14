@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.File;
+import java.util.BitSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,6 +50,14 @@ public class Util {
 
     public static Boolean isNullOrBlank(String str){
         return (str==null||str.isBlank());
+    }
+
+    public static Boolean[] bitset2bool(BitSet b){
+        final Boolean[] booleans = new Boolean[b.length()];
+        for(int i=0;i< b.length();i++){
+            booleans[i] = b.get(i);
+        }
+        return booleans;
     }
 
 }

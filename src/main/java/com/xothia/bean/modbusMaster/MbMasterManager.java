@@ -1,12 +1,18 @@
 package com.xothia.bean.modbusMaster;
 
 import com.xothia.bean.mqttClient.MqttClient;
+import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
 import de.gandev.modjn.ModbusClient;
 import de.gandev.modjn.entity.ModbusFrame;
+import de.gandev.modjn.entity.ModbusFunction;
 import de.gandev.modjn.entity.exception.ConnectionException;
 import de.gandev.modjn.entity.exception.ErrorResponseException;
 import de.gandev.modjn.entity.exception.NoResponseException;
+import de.gandev.modjn.entity.func.response.ReadCoilsResponse;
+import de.gandev.modjn.entity.func.response.ReadDiscreteInputsResponse;
+import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
+import de.gandev.modjn.entity.func.response.ReadInputRegistersResponse;
 import de.gandev.modjn.handler.ModbusResponseHandler;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,7 +55,7 @@ public class MbMasterManager implements MbMaster, InitializingBean {
 
     //transaction id to attribute name.
     @NotNull
-    private final HashMap<Integer, String> attrMap = new HashMap<>();
+    private final ConcurrentHashMap<Integer, String> attrMap = new ConcurrentHashMap<>();
 
     public MbMasterManager() {
     }
@@ -73,7 +79,31 @@ public class MbMasterManager implements MbMaster, InitializingBean {
                 //这里应当调用mqtt client发送数据到topics。待施工...
                 //Q: 如何在这里得到对应的AttrName?
                 //A: 指定TransactionId, 将TID-attrName键值对放到这个类的map里。需要修改callModbusFunction方法。
-                System.out.println(modbusFrame.toString());
+                final UpstreamFormat format = new UpstreamFormat();
+                final int tranId = modbusFrame.getHeader().getTransactionIdentifier();
+                try {
+                    final String attrName = getAttrName(tranId);
+                    final ModbusFunction function = modbusFrame.getFunction();
+                    if(function instanceof ReadHoldingRegistersResponse){
+                        format.put(attrName, ((ReadHoldingRegistersResponse) function).getRegisters());
+                    }
+                    else if(function instanceof ReadCoilsResponse){
+                        format.put(attrName, Util.bitset2bool(((ReadCoilsResponse) function).getCoilStatus()));
+                    }
+                    else if(function instanceof ReadInputRegistersResponse){
+                        format.put(attrName, ((ReadInputRegistersResponse) function).getInputRegisters());
+
+                    }
+                    else if(function instanceof ReadDiscreteInputsResponse){
+                        format.put(attrName, Util.bitset2bool(((ReadDiscreteInputsResponse) function).getInputStatus()));
+                    }
+                } catch (Exception e) {
+                    Util.LOGGER.error(e.getMessage());
+                }
+
+                Util.LOGGER.info(format.getJsonStr());
+
+                //System.out.println(modbusFrame.toString());
             }
         });
     }
@@ -113,6 +143,14 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         }
         throw new RuntimeException("function code do not exist "+functionCode);
         //return -1;
+    }
+
+    private String getAttrName(int id) throws Exception{
+        if(!this.attrMap.containsKey(id)){
+            Util.LOGGER.warn("MbMasterManager: transaction id do not exist in hashmap.");
+            throw new Exception("MbMasterManager: transaction id do not exist in hashmap.");
+        }
+        return this.attrMap.getOrDefault(id, null);
     }
 
     public void putAttrMap(int transactionId, String attrName){
