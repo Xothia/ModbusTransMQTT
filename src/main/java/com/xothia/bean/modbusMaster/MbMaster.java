@@ -1,5 +1,6 @@
 package com.xothia.bean.modbusMaster;
 
+import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
 import de.gandev.modjn.entity.exception.ConnectionException;
 import de.gandev.modjn.entity.exception.ErrorResponseException;
 import de.gandev.modjn.entity.exception.NoResponseException;
@@ -24,4 +25,7 @@ public interface MbMaster {
 
     //用于放id-name键值对
     void putAttrMap(int transactionId, String attrName);
+
+    //同上
+    void putUpsMap(int transactionId, MbSlaveUpstreamPatten ups);
 }

@@ -1,5 +1,6 @@
 package com.xothia.bean.modbusMaster;
 
+import com.xothia.bean.modbusSlave.MbSlaveUpstreamPatten;
 import com.xothia.bean.mqttClient.MqttClient;
 import com.xothia.util.UpstreamFormat;
 import com.xothia.util.Util;
@@ -57,6 +58,11 @@ public class MbMasterManager implements MbMaster, InitializingBean {
     @NotNull
     private final ConcurrentHashMap<Integer, String> attrMap = new ConcurrentHashMap<>();
 
+    //transaction id to topics[].
+    @NotNull
+    private final ConcurrentHashMap<Integer, MbSlaveUpstreamPatten> upsMap = new ConcurrentHashMap<>();
+
+
     public MbMasterManager() {
     }
 
@@ -83,6 +89,7 @@ public class MbMasterManager implements MbMaster, InitializingBean {
                 final int tranId = modbusFrame.getHeader().getTransactionIdentifier();
                 try {
                     final String attrName = getAttrName(tranId);
+                    final MbSlaveUpstreamPatten patten = getUps(tranId);
                     final ModbusFunction function = modbusFrame.getFunction();
                     if(function instanceof ReadHoldingRegistersResponse){
                         format.put(attrName, ((ReadHoldingRegistersResponse) function).getRegisters());
@@ -97,13 +104,14 @@ public class MbMasterManager implements MbMaster, InitializingBean {
                     else if(function instanceof ReadDiscreteInputsResponse){
                         format.put(attrName, Util.bitset2bool(((ReadDiscreteInputsResponse) function).getInputStatus()));
                     }
+
+                    /////////////调用Mqtt Client发数据//////////////
+                    mqttClient.publish(patten.getTopics(), format, patten.getQos());
+
                 } catch (Exception e) {
                     Util.LOGGER.error(e.getMessage());
                 }
-
-                Util.LOGGER.info(format.getJsonStr());
-
-                //System.out.println(modbusFrame.toString());
+                //Util.LOGGER.info(format.getJsonStr());
             }
         });
     }
@@ -156,5 +164,18 @@ public class MbMasterManager implements MbMaster, InitializingBean {
     public void putAttrMap(int transactionId, String attrName){
         this.attrMap.put(transactionId, attrName);
     }
+
+    private MbSlaveUpstreamPatten getUps(int id) throws Exception{
+        if(!this.upsMap.containsKey(id)){
+            Util.LOGGER.warn("MbMasterManager: transaction id do not exist in hashmap [upsMap].");
+            throw new Exception("MbMasterManager: transaction id do not exist in hashmap [upsMap].");
+        }
+        return this.upsMap.getOrDefault(id, null);
+    }
+
+    public void putUpsMap(int transactionId, MbSlaveUpstreamPatten ups){
+        this.upsMap.put(transactionId, ups);
+    }
+
 
 }

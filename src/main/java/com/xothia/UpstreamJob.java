@@ -26,7 +26,6 @@ import org.quartz.JobExecutionException;
 public class UpstreamJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        //待施工
         final JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         final MbMaster mbMaster = (MbMaster) jobDataMap.get("mbMaster");
         final MbSlaveUpstreamPatten patten = (MbSlaveUpstreamPatten) jobDataMap.get("patten");
@@ -39,8 +38,11 @@ public class UpstreamJob implements Job {
         int transactionId;
         for (Attribute attr:attributes) {
             try {
+                //也许需要加锁
+                //每个transactionId可以对应到一个attribute，因此可以定死transactionid，就不需要读写map了，如果慢的话可以改进这里。
                 transactionId = mbMaster.requestAsync(funCode, attr.getAddress(), attr.getQuantity());
                 mbMaster.putAttrMap(transactionId, attr.getAttrName());
+                mbMaster.putUpsMap(transactionId, patten);
 
             } catch (ConnectionException e) {
                 Util.LOGGER.fatal("UpstreamJob: "+e.getMessage());

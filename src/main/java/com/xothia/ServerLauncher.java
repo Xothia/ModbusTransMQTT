@@ -22,7 +22,7 @@ public class ServerLauncher {
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         //Modbus设备代理服务
         final ModbusProxy modbusProxy = context.getBean(ModbusProxy.class);
-        //modbusProxy.run();
+        modbusProxy.run();
 
         //Mqtt设备代理服务
         final MqttProxy server = context.getBean("mqttProxy", MqttProxy.class);

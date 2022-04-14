@@ -80,10 +80,10 @@
             </DownstreamTopics>
 
             <!--  可选项：没有则用Mtm中默认broker  -->
-            <TargetMqttBroker>
-                <BrokerAddress>127.0.0.1</BrokerAddress>
-                <BrokerPort>1883</BrokerPort>
-            </TargetMqttBroker>
+<!--            <TargetMqttBroker>-->
+<!--                <BrokerAddress>127.0.0.1</BrokerAddress>-->
+<!--                <BrokerPort>1883</BrokerPort>-->
+<!--            </TargetMqttBroker>-->
 
             <!--  可选项：没有则用Mtm中默认client  -->
             <ProxyMqttClient>
@@ -130,10 +130,10 @@
                 <Topic>/testDownstream/dataReceive/20</Topic>
             </DownstreamTopics>
 
-            <TargetMqttBroker>
-                <BrokerAddress>127.0.0.1</BrokerAddress>
-                <BrokerPort>1883</BrokerPort>
-            </TargetMqttBroker>
+<!--            <TargetMqttBroker>-->
+<!--                <BrokerAddress>127.0.0.1</BrokerAddress>-->
+<!--                <BrokerPort>1883</BrokerPort>-->
+<!--            </TargetMqttBroker>-->
 
             <ProxyMqttClient>
                 <ClientId>TestClient1</ClientId>
