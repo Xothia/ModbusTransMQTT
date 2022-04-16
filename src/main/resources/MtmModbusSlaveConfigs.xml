@@ -23,10 +23,10 @@
                     <!--  默认为0  -->
                     <Qos>0</Qos>
 <!--                    <CronExpr>this is CronExpr</CronExpr>-->
-                    <IntervalInMilliseconds>2000</IntervalInMilliseconds>
+                    <IntervalInMilliseconds>10</IntervalInMilliseconds>
                     <Topics>
                         <Topic>/testUpstream/dataReceive/0</Topic>
-                        <Topic>/testUpstream/dataReceive/1</Topic>
+<!--                        <Topic>/testUpstream/dataReceive/1</Topic>-->
                     </Topics>
                     <Attributes>
                         <Attribute>
@@ -37,40 +37,40 @@
                             <!--  默认为1  -->
                             <Quantity>1</Quantity>
                         </Attribute>
-                        <Attribute>
-                            <!--  必须  -->
-                            <AttrName>water level</AttrName>
-                            <!--  默认为0  -->
-                            <Address>1</Address>
-                            <!--  默认为1  -->
-                            <Quantity>2</Quantity>
-                        </Attribute>
+<!--                        <Attribute>-->
+<!--                            &lt;!&ndash;  必须  &ndash;&gt;-->
+<!--                            <AttrName>water level</AttrName>-->
+<!--                            &lt;!&ndash;  默认为0  &ndash;&gt;-->
+<!--                            <Address>1</Address>-->
+<!--                            &lt;!&ndash;  默认为1  &ndash;&gt;-->
+<!--                            <Quantity>2</Quantity>-->
+<!--                        </Attribute>-->
 
                     </Attributes>
 
                 </UpstreamPatten>
 
-                <UpstreamPatten>
-                    <!--  默认为0  -->
-                    <Qos>0</Qos>
-                    <CronExpr>*/5 * * * * ?</CronExpr>
-                    <IntervalInMilliseconds>2000</IntervalInMilliseconds>
-                    <Topics>
-                        <Topic>/testUpstream/dataReceive/3</Topic>
-                        <Topic>/testUpstream/dataReceive/4</Topic>
-                    </Topics>
-                    <Attributes>
-                        <Attribute>
-                            <!--  必须  -->
-                            <AttrName>relative humidity</AttrName>
-                            <!--  默认为0  -->
-                            <Address>3</Address>
-                            <!--  默认为1  -->
-                            <Quantity>1</Quantity>
-                        </Attribute>
-                    </Attributes>
+<!--                <UpstreamPatten>-->
+<!--                    &lt;!&ndash;  默认为0  &ndash;&gt;-->
+<!--                    <Qos>0</Qos>-->
+<!--&lt;!&ndash;                    <CronExpr>*/5 * * * * ?</CronExpr>&ndash;&gt;-->
+<!--                    <IntervalInMilliseconds>1</IntervalInMilliseconds>-->
+<!--                    <Topics>-->
+<!--                        <Topic>/testUpstream/dataReceive/3</Topic>-->
+<!--                        <Topic>/testUpstream/dataReceive/4</Topic>-->
+<!--                    </Topics>-->
+<!--                    <Attributes>-->
+<!--                        <Attribute>-->
+<!--                            &lt;!&ndash;  必须  &ndash;&gt;-->
+<!--                            <AttrName>relative humidity</AttrName>-->
+<!--                            &lt;!&ndash;  默认为0  &ndash;&gt;-->
+<!--                            <Address>3</Address>-->
+<!--                            &lt;!&ndash;  默认为1  &ndash;&gt;-->
+<!--                            <Quantity>1</Quantity>-->
+<!--                        </Attribute>-->
+<!--                    </Attributes>-->
 
-                </UpstreamPatten>
+<!--                </UpstreamPatten>-->
 
             </UpstreamPattens>
 
@@ -94,24 +94,79 @@
 
         </ModbusSlave>
 
+<!--        <ModbusSlave>-->
+<!--            <HostAddress>127.0.0.1</HostAddress>-->
+<!--            <HostPort>7778</HostPort>-->
+<!--            <SlaveId>1</SlaveId>-->
+<!--            <Function>1</Function>-->
+<!--            <UpstreamPattens>-->
+<!--                <UpstreamPatten>-->
+<!--                    &lt;!&ndash;  默认为0  &ndash;&gt;-->
+<!--                    <Qos>0</Qos>-->
+<!--&lt;!&ndash;                <CronExpr>this is CronExpr</CronExpr>&ndash;&gt;-->
+<!--                    <IntervalInMilliseconds>1</IntervalInMilliseconds>-->
+
+<!--                    &lt;!&ndash;可以为空但必须有 之后会改&ndash;&gt;-->
+<!--                    <Topics>-->
+<!--                        <Topic>/testUpstream/dataReceive/20</Topic>-->
+<!--                        <Topic>/testUpstream/dataReceive/21</Topic>-->
+<!--                    </Topics>-->
+
+<!--                    <Attributes>-->
+<!--                        <Attribute>-->
+<!--                            &lt;!&ndash;  必须  &ndash;&gt;-->
+<!--                            <AttrName>temperature</AttrName>-->
+<!--                            &lt;!&ndash;  默认为0  &ndash;&gt;-->
+<!--                            <Address>0</Address>-->
+<!--                            &lt;!&ndash;  默认为1  &ndash;&gt;-->
+<!--                            <Quantity>2</Quantity>-->
+<!--                        </Attribute>-->
+<!--                    </Attributes>-->
+<!--                </UpstreamPatten>-->
+<!--            </UpstreamPattens>-->
+
+<!--            &lt;!&ndash;可以为空但必须有 之后会改&ndash;&gt;-->
+<!--            <DownstreamTopics>-->
+<!--                <Topic>/testDownstream/dataReceive/20</Topic>-->
+<!--            </DownstreamTopics>-->
+
+<!--&lt;!&ndash;            <TargetMqttBroker>&ndash;&gt;-->
+<!--&lt;!&ndash;                <BrokerAddress>127.0.0.1</BrokerAddress>&ndash;&gt;-->
+<!--&lt;!&ndash;                <BrokerPort>1883</BrokerPort>&ndash;&gt;-->
+<!--&lt;!&ndash;            </TargetMqttBroker>&ndash;&gt;-->
+
+<!--            <ProxyMqttClient>-->
+<!--                <ClientId>TestClient1</ClientId>-->
+<!--                <Username>TestClient1</Username>-->
+<!--                <Password>TestClient1</Password>-->
+<!--            </ProxyMqttClient>-->
+
+<!--        </ModbusSlave>-->
+
+
         <ModbusSlave>
+            <!--  默认127.0.0.1  -->
             <HostAddress>127.0.0.1</HostAddress>
+            <!--  默认502  -->
             <HostPort>7778</HostPort>
-            <SlaveId>1</SlaveId>
+            <!--  默认0  -->
+            <SlaveId>0</SlaveId>
+
+            <!--  默认3  -->
+            <!--  1 read coils -->
+            <!--  2 read discrete inputs  -->
+            <!--  3 read holding registers  -->
+            <!--  4 read input registers  -->
             <Function>1</Function>
             <UpstreamPattens>
+                <!--  配置上报周期、上报topic、上报属性、数据来源  -->
                 <UpstreamPatten>
                     <!--  默认为0  -->
                     <Qos>0</Qos>
-<!--                <CronExpr>this is CronExpr</CronExpr>-->
-                    <IntervalInMilliseconds>4000</IntervalInMilliseconds>
-
-                    <!--可以为空但必须有 之后会改-->
+                    <IntervalInMilliseconds>10</IntervalInMilliseconds>
                     <Topics>
-                        <Topic>/testUpstream/dataReceive/20</Topic>
-                        <Topic>/testUpstream/dataReceive/21</Topic>
+                        <Topic>/testUpstream/dataReceive/2</Topic>
                     </Topics>
-
                     <Attributes>
                         <Attribute>
                             <!--  必须  -->
@@ -119,26 +174,132 @@
                             <!--  默认为0  -->
                             <Address>0</Address>
                             <!--  默认为1  -->
-                            <Quantity>2</Quantity>
+                            <Quantity>1</Quantity>
                         </Attribute>
+
                     </Attributes>
+
                 </UpstreamPatten>
+
             </UpstreamPattens>
 
-            <!--可以为空但必须有 之后会改-->
             <DownstreamTopics>
-                <Topic>/testDownstream/dataReceive/20</Topic>
+                <Topic>/testDownstream/dataReceive/0</Topic>
+                <Topic>/testDownstream/dataReceive/1</Topic>
             </DownstreamTopics>
 
-<!--            <TargetMqttBroker>-->
-<!--                <BrokerAddress>127.0.0.1</BrokerAddress>-->
-<!--                <BrokerPort>1883</BrokerPort>-->
-<!--            </TargetMqttBroker>-->
-
+            <!--  可选项：没有则用Mtm中默认client  -->
             <ProxyMqttClient>
-                <ClientId>TestClient1</ClientId>
-                <Username>TestClient1</Username>
-                <Password>TestClient1</Password>
+                <ClientId>TestClient2</ClientId>
+                <Username>TestClient0</Username>
+                <Password>TestClient0</Password>
+            </ProxyMqttClient>
+
+        </ModbusSlave>
+
+        <ModbusSlave>
+            <!--  默认127.0.0.1  -->
+            <HostAddress>127.0.0.1</HostAddress>
+            <!--  默认502  -->
+            <HostPort>7780</HostPort>
+            <!--  默认0  -->
+            <SlaveId>0</SlaveId>
+
+            <!--  默认3  -->
+            <!--  1 read coils -->
+            <!--  2 read discrete inputs  -->
+            <!--  3 read holding registers  -->
+            <!--  4 read input registers  -->
+            <Function>3</Function>
+            <UpstreamPattens>
+                <!--  配置上报周期、上报topic、上报属性、数据来源  -->
+                <UpstreamPatten>
+                    <!--  默认为0  -->
+                    <Qos>0</Qos>
+                    <IntervalInMilliseconds>10</IntervalInMilliseconds>
+                    <Topics>
+                        <Topic>/testUpstream/dataReceive/3</Topic>
+                    </Topics>
+                    <Attributes>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>temperature</AttrName>
+                            <!--  默认为0  -->
+                            <Address>0</Address>
+                            <!--  默认为1  -->
+                            <Quantity>1</Quantity>
+                        </Attribute>
+
+                    </Attributes>
+
+                </UpstreamPatten>
+
+            </UpstreamPattens>
+
+            <DownstreamTopics>
+                <Topic>/testDownstream/dataReceive/0</Topic>
+                <Topic>/testDownstream/dataReceive/1</Topic>
+            </DownstreamTopics>
+
+            <!--  可选项：没有则用Mtm中默认client  -->
+            <ProxyMqttClient>
+                <ClientId>TestClient3</ClientId>
+                <Username>TestClient0</Username>
+                <Password>TestClient0</Password>
+            </ProxyMqttClient>
+
+        </ModbusSlave>
+
+
+        <ModbusSlave>
+            <!--  默认127.0.0.1  -->
+            <HostAddress>127.0.0.1</HostAddress>
+            <!--  默认502  -->
+            <HostPort>7781</HostPort>
+            <!--  默认0  -->
+            <SlaveId>0</SlaveId>
+
+            <!--  默认3  -->
+            <!--  1 read coils -->
+            <!--  2 read discrete inputs  -->
+            <!--  3 read holding registers  -->
+            <!--  4 read input registers  -->
+            <Function>3</Function>
+            <UpstreamPattens>
+                <!--  配置上报周期、上报topic、上报属性、数据来源  -->
+                <UpstreamPatten>
+                    <!--  默认为0  -->
+                    <Qos>0</Qos>
+                    <IntervalInMilliseconds>10</IntervalInMilliseconds>
+                    <Topics>
+                        <Topic>/testUpstream/dataReceive/4</Topic>
+                    </Topics>
+                    <Attributes>
+                        <Attribute>
+                            <!--  必须  -->
+                            <AttrName>temperature</AttrName>
+                            <!--  默认为0  -->
+                            <Address>0</Address>
+                            <!--  默认为1  -->
+                            <Quantity>1</Quantity>
+                        </Attribute>
+
+                    </Attributes>
+
+                </UpstreamPatten>
+
+            </UpstreamPattens>
+
+            <DownstreamTopics>
+                <Topic>/testDownstream/dataReceive/0</Topic>
+                <Topic>/testDownstream/dataReceive/1</Topic>
+            </DownstreamTopics>
+
+            <!--  可选项：没有则用Mtm中默认client  -->
+            <ProxyMqttClient>
+                <ClientId>TestClient4</ClientId>
+                <Username>TestClient0</Username>
+                <Password>TestClient0</Password>
             </ProxyMqttClient>
 
         </ModbusSlave>

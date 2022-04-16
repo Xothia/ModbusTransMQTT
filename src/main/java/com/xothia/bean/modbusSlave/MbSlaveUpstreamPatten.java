@@ -43,6 +43,9 @@ public class MbSlaveUpstreamPatten implements InitializingBean {
     @NotNull
     private Attribute[] attributes; //上报数据具体参数
 
+    //用于测试响应时间
+    public long timestamp;
+
     public MbSlaveUpstreamPatten() {
     }
 

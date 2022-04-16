@@ -26,6 +26,9 @@ import org.quartz.JobExecutionException;
 public class UpstreamJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        //用于测试响应时间
+        final long currentTimeMillis = System.currentTimeMillis();
+
         final JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         final MbMaster mbMaster = (MbMaster) jobDataMap.get("mbMaster");
         final MbSlaveUpstreamPatten patten = (MbSlaveUpstreamPatten) jobDataMap.get("patten");
@@ -34,6 +37,9 @@ public class UpstreamJob implements Job {
 
         final Attribute[] attributes = patten.getAttributes();
         final UpstreamFormat format = new UpstreamFormat();
+
+        //用于测试响应时间
+        patten.timestamp = currentTimeMillis;
 
         int transactionId;
         for (Attribute attr:attributes) {

@@ -109,6 +109,8 @@ public class MbMasterManager implements MbMaster, InitializingBean {
                         else if(function instanceof ReadDiscreteInputsResponse){
                             format.put(attrName, Util.bitset2bool(((ReadDiscreteInputsResponse) function).getInputStatus()));
                         }
+                        //用于测试响应时间
+                        format.put("timestamp", patten.timestamp);
                         /////////////调用Mqtt Client发数据//////////////
                         mqttClient.publish(patten.getTopics(), format, patten.getQos());
 
