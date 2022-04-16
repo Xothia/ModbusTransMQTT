@@ -96,7 +96,7 @@ public class MbSlaveGroup implements InitializingBean {
         mqttClientManager.setMbMaster(mbMasterManager);
         map.put("MbMasterManager", mbMasterManager);
 
-        return ctx.getBean(MbTcpSlave.class, map.getOrDefault("SlaveId", 0), map.getOrDefault("Function", 0),map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
+        return ctx.getBean(MbTcpSlave.class, map.getOrDefault("SlaveId", 0), map.getOrDefault("Function", 3),map.get("UpstreamPattens"), map.get("DownstreamTopics"), map.get("MqttClientManager"), map.get("MbMasterManager"));
     }
 
     private MbMasterManager buildMbMasterManager(HashMap<String, Object> map, ApplicationContext ctx){
