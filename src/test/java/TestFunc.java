@@ -30,6 +30,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import stressTest.GenXml;
 
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
@@ -305,40 +306,21 @@ public class TestFunc {
 //        System.out.println(text);
         final DownstreamFormat t = JSON.parseObject(text, DownstreamFormat.class);
         System.out.println(JSON.toJSONString(t));
-//
-////        //Modbus Master测试
-//
-//        System.out.println(JSON.toJSONString(booleans));
 
-//        modbusClient.setup(new ModbusResponseHandler() {
-//            @Override
-//            public void newResponse(ModbusFrame modbusFrame) {
-//                final BitSet bitSet = ((ReadCoilsResponse) modbusFrame.getFunction()).getCoilStatus();
-//                final UpstreamFormat format = new UpstreamFormat();
-//                format.put("tat", Util.bitset2bool(bitSet));
-//                System.out.println(format.getJsonStr());
-//            }
-//        });
-//
-//        modbusClient.readCoilsAsync(0,3);
-////        modbusClient.readHoldingRegistersAsync(0, 1);
-////        modbusClient.writeSingleCoil();
-////        modbusClient.writeSingleRegisterAsync();
-////        modbusClient.writeMultipleCoilsAsync();
-////        modbusClient.writeMultipleRegistersAsync();
-//
-//
-//        //ReadHoldingRegistersResponse response = modbusClient.readHoldingRegisters(0, 1);
-//        //System.out.println(response);
-//
-//
-//        while(true){
-//
-//        }
-//        //modbusClient.close();
+    }
 
+    @Test
+    public void launchTest() throws Exception{
+        //测试genXML
+        final GenXml genXml = new GenXml(30000, 40000);
+        //genXml.init();
+        genXml.runTest();
+    }
 
-
+    @Test
+    public void test12() throws Exception{
+        System.out.println(System.nanoTime());
+        System.out.println(System.currentTimeMillis());
     }
 
 }

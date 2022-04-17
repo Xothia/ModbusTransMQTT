@@ -27,7 +27,8 @@ public class UpstreamJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         //用于测试响应时间
-        final long currentTimeMillis = System.currentTimeMillis();
+        //final long currentTimeMillis = System.currentTimeMillis(); //毫秒
+        final long currentTimeMillis = System.nanoTime(); //纳秒
 
         final JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         final MbMaster mbMaster = (MbMaster) jobDataMap.get("mbMaster");
