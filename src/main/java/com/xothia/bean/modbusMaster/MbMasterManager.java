@@ -17,7 +17,10 @@ import de.gandev.modjn.entity.func.response.ReadDiscreteInputsResponse;
 import de.gandev.modjn.entity.func.response.ReadHoldingRegistersResponse;
 import de.gandev.modjn.entity.func.response.ReadInputRegistersResponse;
 import de.gandev.modjn.handler.ModbusResponseHandler;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,6 +47,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component("mbMasterManager")
 @Scope("prototype")
 public class MbMasterManager implements MbMaster, InitializingBean {
+
+    @NotNull
+    private static final EventLoopGroup workerGroup; //所有MbMaster共用的线程池
+
+    @Positive
+    private static int PUBLIC_WORKER_THEAD_NUM; //线程池线程数
 
     @NotNull
     private String hostAddress;  //tcp slave ip 地址
@@ -64,7 +74,10 @@ public class MbMasterManager implements MbMaster, InitializingBean {
     @NotNull
     private final ConcurrentHashMap<Integer, MbSlaveUpstreamPatten> upsMap = new ConcurrentHashMap<>();
 
-
+    static{
+        //初始化线程池
+        workerGroup = new NioEventLoopGroup(PUBLIC_WORKER_THEAD_NUM);
+    }
     public MbMasterManager() {
     }
 
@@ -76,7 +89,7 @@ public class MbMasterManager implements MbMaster, InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        this.modbusClient = new ModbusClient(hostAddress, hostPort);
+        this.modbusClient = new ModbusClient(hostAddress, hostPort, workerGroup);
         Util.valid(this);
     }
 
@@ -211,5 +224,8 @@ public class MbMasterManager implements MbMaster, InitializingBean {
         this.upsMap.put(transactionId, ups);
     }
 
-
+    @Value("${gateway.modbusDevice.modbusMaster-threads}")
+    public static void setPublicWorkerTheadNum(int publicWorkerTheadNum) {
+        PUBLIC_WORKER_THEAD_NUM = publicWorkerTheadNum;
+    }
 }
