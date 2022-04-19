@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @PropertySource(value={"classpath:Mtm.properties"})
+@ChannelHandler.Sharable
 public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     protected final Log logger = LogFactory.getLog(getClass()); //日志
     private final static DefaultEventLoopGroup group = new DefaultEventLoopGroup();
