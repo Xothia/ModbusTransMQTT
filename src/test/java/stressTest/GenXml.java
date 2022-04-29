@@ -46,12 +46,15 @@ import java.util.concurrent.ExecutionException;
  * @Description : 用于自动生成配置文件。
  */
 public class GenXml {
-    public int slaveNumber=200;
-    public int pattenNumber = 2;
+    public int slaveNumber=50;
     public static int intervalMill = 50;
-    public static int upsTopics = 1;
+
+    public int pattenNumber = 2;
     public static int attrNumber = 1;
+
+    public static int upsTopics = 1;
     public static int quantity = 1;
+
 
     public static int PUBLIC_WORKER_THEAD_NUM = 32; //线程池线程数
     public static int PUBLIC_BOSS_THEAD_NUM = 4; //线程池线程数

@@ -31,6 +31,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import stressTest.GenXml;
+import stressTest.MqttCliTest;
+import stressTest.MyMqttTestJob;
 
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
@@ -315,6 +317,38 @@ public class TestFunc {
         final GenXml genXml = new GenXml(30000, 40000);
         //genXml.init();
         genXml.runTest();
+    }
+
+    @Test
+    public void launchMqttTest() throws Exception{
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+        final MqttCliTest cliTest = new MqttCliTest();
+
+        JobDetail jobDetail = JobBuilder.newJob(MyMqttTestJob.class).build();
+        jobDetail.getJobDataMap().put("test", cliTest);
+
+        //构建trigger
+
+        Trigger trigger;
+
+        CronScheduleBuilder cronBuilder = CronScheduleBuilder.cronSchedule("0 */1 10 * * ?");
+
+        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInMilliseconds(10000)
+                .repeatForever();
+
+        trigger = TriggerBuilder.newTrigger()
+                .withSchedule(builder) //
+                .startNow()
+                .build();
+
+        scheduler.scheduleJob(jobDetail, trigger);
+
+        scheduler.start();
+        while (true){
+
+        }
+
     }
 
     @Test
