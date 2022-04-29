@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component("mqttProxy")
 @PropertySource(value={"classpath:Mtm.properties"})
 public class MqttProxy implements InitializingBean {
-    @Value("${gateway.port}")
+    @Value("${gateway.mqttDevice.proxyPort}")
     private Integer port; //服务端口号
 
     private ProxyFrontendHandler proxyFrontendHandler; //

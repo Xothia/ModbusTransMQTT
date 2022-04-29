@@ -33,11 +33,11 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     private final static DefaultEventLoopGroup group = new DefaultEventLoopGroup();
 
     //目标远程broker url
-    @Value("${gateway.remote.url}")
+    @Value("${gateway.mqttDevice.brokerAddress}")
     private String remoteHost;
 
     //目标远程broker port
-    @Value("${gateway.remote.port}")
+    @Value("${gateway.mqttDevice.brokerPort}")
     private int remotePort;
 
     //网关与broker之间的通道（从代理服务器出去所以是outbound过境）

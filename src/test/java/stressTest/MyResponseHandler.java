@@ -50,6 +50,11 @@ public class MyResponseHandler extends ModbusRequestHandler {
     protected ReadHoldingRegistersResponse readHoldingRegistersRequest(ReadHoldingRegistersRequest readHoldingRegistersRequest) {
         int[] registers = new int[readHoldingRegistersRequest.getQuantityOfInputRegisters()];
         registers[0] = 12;
+//        try {
+//            Thread.sleep(50);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return new ReadHoldingRegistersResponse(registers);
     }
 
